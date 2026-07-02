@@ -1,0 +1,7 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+  <path d="M30,0 L210,0 Q240,0 240,30 L240,210 Q240,240 210,240 L30,240 Q0,240 0,210 L0,30 Q0,0 30,0 Z" fill="#0E1416"/>
+  <g transform="translate(55 50) scale(1.16)">
+    <path fill-rule="evenodd" fill="#E5322D" d="M0,0 L90,0 Q112,0 112,22 L112,48 Q112,70 90,70 L0,70 Z M18,46 Q58,32 98,46 Q58,60 18,46 Z M55,20 L61,20 L61,42 L55,42 Z M61,20 L61,38 L88,38 Z"/>
+    <polygon points="68,46 98,46 112,120 82,120" fill="#E5322D"/>
+  </g>
+</svg>
