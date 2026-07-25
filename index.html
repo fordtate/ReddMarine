@@ -4,26 +4,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Redd Marine — Coming Soon</title>
-<meta name="description" content="Marine-grade hardware, engineered for the dock. Redd Marine is coming soon.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Redd Marine builds smart-dock safety technology — shock protection, lighting, and security for the modern residential dock. Coming soon.">
+<meta name="theme-color" content="#ef3513">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180.png">
+<link rel="manifest" href="/site.webmanifest">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0E1416;
-    --red:#E5322D;
-    --paper:#F5F5F3;
-    --steel:#8A97A0;
-    --slate:#223038;
-    --line:rgba(245,245,243,.10);
+    --ink:#141414;
+    --red:#EF3513;
+    --cream:#FFF8E1;
+    --cream-dim:rgba(255,248,225,.58);
+    --line:rgba(255,248,225,.14);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{
     background:var(--ink);
-    color:var(--paper);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    color:var(--cream);
+    font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
     display:flex;
     align-items:center;
@@ -41,7 +48,7 @@
     width:900px;
     height:900px;
     transform:translate(-50%,-50%);
-    background:radial-gradient(circle, rgba(229,50,45,.14), transparent 60%);
+    background:radial-gradient(circle, rgba(239,50,45,.16), transparent 60%);
     pointer-events:none;
   }
   main{
@@ -50,26 +57,16 @@
     width:100%;
     text-align:center;
   }
-  .wordmark{
-    width:min(320px, 70vw);
-    margin:0 auto 14px;
+  .emblem{
+    width:min(220px, 60vw);
+    margin:0 auto 40px;
     display:block;
-  }
-  .fullname{
-    font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
-    font-size:13px;
-    font-weight:600;
-    letter-spacing:.55em;
-    text-transform:uppercase;
-    color:var(--steel);
-    margin:0 0 0 .55em;
   }
   .badge{
     display:inline-block;
-    margin-top:56px;
-    font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    font-family:'Montserrat',sans-serif;
     font-size:11px;
-    font-weight:600;
+    font-weight:700;
     letter-spacing:.28em;
     text-transform:uppercase;
     color:var(--red);
@@ -82,42 +79,38 @@
     font-weight:800;
     letter-spacing:-.01em;
     line-height:1.25;
-    max-width:22ch;
+    max-width:24ch;
     margin:22px auto 14px;
   }
   p.sub{
-    color:var(--steel);
+    color:var(--cream-dim);
     font-size:16px;
+    font-weight:500;
     line-height:1.6;
-    max-width:44ch;
+    max-width:46ch;
     margin:0 auto;
   }
   footer{
     margin-top:64px;
-    font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    font-family:'Montserrat',sans-serif;
     font-size:11px;
+    font-weight:600;
     letter-spacing:.12em;
     text-transform:uppercase;
-    color:var(--steel);
-    opacity:.6;
+    color:var(--cream-dim);
+    opacity:.7;
   }
 </style>
 </head>
 <body>
 <main>
-  <svg class="wordmark" viewBox="0 0 496 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Redd">
-    <g><path fill-rule="evenodd" fill="#F5F5F3" d="M0,0 L90,0 Q112,0 112,22 L112,48 Q112,70 90,70 L0,70 Z M18,46 Q58,32 98,46 Q58,60 18,46 Z M55,20 L61,20 L61,42 L55,42 Z M61,20 L61,38 L88,38 Z"/><polygon points="68,46 98,46 112,120 82,120" fill="#F5F5F3"/></g>
-    <g transform="translate(132 0)"><rect x="0" y="0" width="30" height="120" fill="#F5F5F3"/><path d="M0,0 L78,0 Q100,0 100,22 L100,30 L0,30 Z" fill="#F5F5F3"/><rect x="0" y="45" width="78" height="30" fill="#F5F5F3"/><path d="M0,90 L100,90 L100,98 Q100,120 78,120 L0,120 Z" fill="#F5F5F3"/></g>
-    <g transform="translate(252 0)"><path fill-rule="evenodd" fill="#E5322D" d="M0,0 L90,0 Q112,0 112,22 L112,98 Q112,120 90,120 L0,120 Z M30,30 L60,30 Q82,30 82,52 L82,68 Q82,90 60,90 L30,90 Z"/></g>
-    <g transform="translate(384 0)"><path fill-rule="evenodd" fill="#E5322D" d="M0,0 L90,0 Q112,0 112,22 L112,98 Q112,120 90,120 L0,120 Z M30,30 L60,30 Q82,30 82,52 L82,68 Q82,90 60,90 L30,90 Z"/></g>
-  </svg>
-  <p class="fullname">Marine</p>
+  <img class="emblem" src="redd-marine-emblem.png" alt="Redd Marine">
 
   <span class="badge">Coming Soon</span>
-  <h1>Marine-grade hardware, engineered for the dock.</h1>
-  <p class="sub">Rated for salt air, UV, and tidal cycling. Redd Marine is in development — the full site launches soon.</p>
+  <h1>Dock safety technology, reimagined.</h1>
+  <p class="sub">Shock protection, lighting, and security built for the residential dock. Redd Marine is in development — the full site launches soon.</p>
 
-  <footer>&copy; 2026 Redd Marine</footer>
+  <footer>&copy; 2026 Redd Marine &middot; Wilmington, NC</footer>
 </main>
 </body>
 </html>
