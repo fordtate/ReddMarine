@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Redd Marine — Coming Soon</title>
-<meta name="description" content="Redd Marine builds smart-dock safety technology — shock protection, lighting, and security for the modern residential dock. Coming soon.">
+<meta name="description" content="Redd Marine builds smart-dock safety technology for Wrightsville Beach and the Cape Fear coast — shock protection, lighting, and security for the modern residential dock. Coming soon.">
 <meta name="theme-color" content="#ef3513">
 
 <link rel="icon" href="/assets/icons/favicon.ico" sizes="any">
@@ -90,8 +90,33 @@
     max-width:46ch;
     margin:0 auto;
   }
+  .preview{
+    margin-top:52px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    opacity:.5;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:9px 15px;
+    border:1px solid transparent;
+    border-radius:999px;
+    transition:opacity .18s,border-color .18s,color .18s;
+  }
+  .preview:hover,.preview:focus-visible{
+    opacity:1;
+    color:var(--cream);
+    border-color:var(--line);
+    outline:none;
+  }
+  .preview .lock{opacity:.7}
+
   footer{
-    margin-top:64px;
+    margin-top:22px;
     font-family:'Montserrat',sans-serif;
     font-size:11px;
     font-weight:600;
@@ -108,9 +133,17 @@
 
   <span class="badge">Coming Soon</span>
   <h1>Dock safety technology, reimagined.</h1>
-  <p class="sub">Shock protection, lighting, and security built for the residential dock. Redd Marine is in development — the full site launches soon.</p>
+  <p class="sub">Shock protection, lighting, and security built for the residential dock. Designed on the water at Wrightsville Beach. Redd Marine is in development — the full site launches soon.</p>
 
-  <footer>&copy; 2026 Redd Marine &middot; Wilmington, NC</footer>
+  <a class="preview" href="/kit/" rel="nofollow">
+    <svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+    </svg>
+    Builder preview
+  </a>
+
+  <footer>&copy; 2026 Redd Marine &middot; Wrightsville Beach, NC</footer>
 </main>
 </body>
 </html>

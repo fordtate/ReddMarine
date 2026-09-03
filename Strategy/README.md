@@ -9,6 +9,8 @@ CEO-mode review (gstack `/plan-ceo-review`).
 | `Redd Marine - Product Design.md` | The main design doc. Problem, demand evidence, status quo, the wedge, business shape, premises, competitive landscape, three implementation approaches (Approach A chosen), feasibility (sensing topology, MCU failsafe), budget, open questions, and the assignment. Survived 3 rounds of adversarial review. |
 | `Redd Marine - CEO Review & Scope Decisions.md` | The CEO-review output. Premise challenge, inversion (ranked failure modes), the 10x vision, and 4 accepted scope decisions (business-shape resolution, builder service dashboard in v1, staged liability structure, platform-ready hardware headroom). |
 | `NEXT STEPS - 30-Day Assignment.md` | The standalone action list for this month. |
+| `Builder Interview Kit — Production Plan.md` | Spec for the visual props used in the builder interviews and the homeowner deposit test: the interactive app prototype, the responsive dock lighting demo, fake-data spec, narration script, the Claude Code build workflow, and the Blender question. **Components 1 and 2 are built** — see the status block at the top of that doc. |
+| `demo-kit/` | The built kit. `prototype.html` is the offline demo copy; `build-kit.mjs` encrypts it into `docs/kit/` for www.reddmarine.com/kit/. |
 
 ## The short version
 

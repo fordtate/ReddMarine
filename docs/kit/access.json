@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "note": "Wrapped keys only. Editable through kit/admin.html — no terminal needed.",
+  "payload": "payload.enc",
+  "cipher": "AES-GCM",
+  "kdf": {
+    "name": "PBKDF2",
+    "hash": "SHA-256",
+    "iterations": 600000,
+    "keyLength": 256
+  },
+  "admin": {
+    "salt": "vyNPwdIHeQ9v+cdQGXtXqg==",
+    "iv": "l4urgAXVfFaM9i2b",
+    "key": "bDMRSOpIVclilVUXgpwJEDS11ff7ZpVZnqd4YctXuToUHMoci7l/925OvyQU6JV/"
+  },
+  "entries": [
+    {
+      "label": "Demo — first builder meetings",
+      "added": "2026-09-03",
+      "salt": "XWKSchaxTtq8BD9OSZUbtw==",
+      "iv": "zRsZBd1i2Yeak53A",
+      "key": "tJDOZFaXKAcnDPR2nz6K/rVlVZcOCvfLp4rlGwGXDKzoCokIfm3WaYXZzTVWOGXO"
+    }
+  ]
+}

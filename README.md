@@ -6,6 +6,11 @@ the current strategy docs.
 The website deploys to **www.reddmarine.com** via GitHub Pages **from the `docs/`
 folder** (not the repo root).
 
+> **Pages source — verify before assuming.** This README previously stated the
+> `/docs` setting was already applied; it was not. The live site was being served
+> from the repo root. Settings → Pages is the only source of truth. If a change
+> under `docs/` does not appear on the live site, check that setting first.
+
 ## Folder layout
 
 | Path | Contents | Deployed? |
@@ -16,7 +21,9 @@ folder** (not the repo root).
 | `docs/site.webmanifest` | PWA manifest, served at `/site.webmanifest`. | ✅ |
 | `docs/assets/icons/` | Favicons, apple-touch icon, PWA icons, maskable icons. | ✅ |
 | `docs/assets/img/` | Site imagery (currently just the emblem). | ✅ |
-| `Strategy/` | Current product design, CEO review, and 30-day next steps. | ❌ |
+| `docs/kit/` | The builder interview kit, encrypted behind a password. `index.html` is the gate, `admin.html` manages who has a password, `payload.enc` is the encrypted kit, `access.json` holds the wrapped keys. | ✅ |
+| `Strategy/` | Current product design, CEO review, 30-day next steps, and the interview-kit production plan. | ❌ |
+| `Strategy/demo-kit/` | The kit's plaintext source: `prototype.html` (open it directly for an offline demo) and `build-kit.mjs`, which encrypts it into `docs/kit/`. | ❌ |
 | `ReddMarine Brand Package/` | The finished brand deliverable — logos, app icons, favicon set, social assets, brand guide. Source of record for all marks. | ❌ |
 | `Branding Source Concepts/` | Early concept art the final marks were built from. Reference only. | ❌ |
 | `_OUTDATED (pre-Sept-2026 strategy)/` | Superseded research and founder notes. See the README inside it. | ❌ |
@@ -34,11 +41,42 @@ but never published.
 
 That's the whole loop. `git status` for a site edit shows only `docs/…` paths.
 
-### One-time GitHub setting (already done, for reference)
+### The GitHub Pages setting
 
 Settings → Pages → Build and deployment → Source: **Deploy from a branch** →
 Branch: **main**, folder: **/docs**. The custom domain (www.reddmarine.com) is set
 in the same page and is what keeps `docs/CNAME` in sync.
+
+Set to `/docs` on 2026-09-03. Before that the site was served from the repo root,
+which is why the root `index.html` was the live page for a while even though this
+README claimed otherwise.
+
+## The builder interview kit
+
+`Strategy/demo-kit/prototype.html` is the source: one self-contained file, no
+network of any kind, meant to be opened full-screen on an iPad in a builder
+meeting. Keep a local copy for demos — it is the offline path and does not need
+the site to be up.
+
+The hosted copy at **www.reddmarine.com/kit/** is the same file, AES-GCM encrypted
+under a random content key. Each password holds its own PBKDF2-wrapped copy of
+that key, so passwords can be added and removed without re-encrypting anything.
+
+**After editing the prototype**, republish it:
+
+```
+KIT_ADMIN_PHRASE="<your admin phrase>" node Strategy/demo-kit/build-kit.mjs
+git add docs/kit && git commit -m "Kit: <what changed>" && git push
+```
+
+Passing the admin phrase keeps every password that is already handed out working.
+`--init` instead generates a new content key and new passwords, which invalidates
+every password already given to a builder.
+
+**To add or remove a password**, no terminal: go to
+**www.reddmarine.com/kit/admin.html**, enter the admin phrase, make the change,
+and paste the file it gives you over `docs/kit/access.json` in the GitHub web UI.
+The page itself lists the exact clicks.
 
 ## Site asset map
 

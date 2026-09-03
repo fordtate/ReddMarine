@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Redd Marine — Kit Access</title>
+<meta name="theme-color" content="#141414">
+<link rel="icon" href="/assets/icons/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141414;
+    --red:#EF3513;
+    --cream:#FFF8E1;
+    --cream-dim:rgba(255,248,225,.58);
+    --cream-faint:rgba(255,248,225,.34);
+    --line:rgba(255,248,225,.14);
+    --ok:#4FD19A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--ink);color:var(--cream);
+    font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100dvh;padding:32px 24px 64px;
+  }
+  .shell{max-width:620px;margin:0 auto}
+
+  header{text-align:center;margin-bottom:34px}
+  .emblem{width:110px;margin:0 auto 22px;display:block}
+  .badge{
+    display:inline-block;font-size:10px;font-weight:700;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--red);
+    border:1px solid var(--line);border-radius:8px;padding:7px 14px;
+  }
+  h1{font-size:24px;font-weight:800;letter-spacing:-.01em;margin:18px 0 10px}
+  header p{color:var(--cream-dim);font-size:13.5px;font-weight:500;line-height:1.65;max-width:44ch;margin:0 auto}
+
+  h2{
+    font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--cream-faint);margin-bottom:14px;
+  }
+  .card{
+    background:rgba(255,248,225,.045);border:1px solid var(--line);
+    border-radius:14px;padding:22px;margin-bottom:20px;
+  }
+
+  label{
+    display:block;font-size:10.5px;font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--cream-dim);margin-bottom:8px;
+  }
+  input{
+    font:inherit;font-size:16px;font-weight:600;width:100%;padding:14px 16px;
+    color:var(--cream);background:rgba(255,248,225,.06);
+    border:1px solid var(--line);border-radius:10px;
+    transition:border-color .16s,background .16s;
+  }
+  input::placeholder{color:rgba(255,248,225,.24);font-weight:500}
+  input:focus{outline:none;border-color:var(--red);background:rgba(255,248,225,.1)}
+  .field + .field{margin-top:14px}
+
+  button{
+    font:inherit;font-size:13.5px;font-weight:700;letter-spacing:.03em;
+    padding:13px 20px;border:0;border-radius:10px;cursor:pointer;
+    background:var(--red);color:#fff;transition:filter .16s,opacity .16s;
+  }
+  button:hover:not(:disabled){filter:brightness(1.1)}
+  button:disabled{opacity:.5;cursor:default}
+  button.ghost{background:rgba(255,248,225,.09);color:var(--cream);border:1px solid var(--line)}
+  button.ghost:hover:not(:disabled){background:rgba(255,248,225,.16)}
+  button.danger{background:none;color:#FF7A63;padding:7px 11px;font-size:11.5px;border:1px solid rgba(255,122,99,.32)}
+  button.danger:hover{background:rgba(255,122,99,.12)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .row button{flex:1;min-width:150px}
+
+  .msg{margin-top:13px;font-size:12.5px;font-weight:600;line-height:1.55;min-height:18px}
+  .msg.err{color:#FF7A63}
+  .msg.ok{color:var(--ok)}
+  .msg.busy{color:var(--cream-dim)}
+
+  ul.entries{list-style:none}
+  ul.entries li{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 0;border-bottom:1px solid rgba(255,248,225,.08);
+  }
+  ul.entries li:last-child{border-bottom:0}
+  ul.entries .who{flex:1;min-width:0}
+  ul.entries .nm{font-size:14px;font-weight:700;letter-spacing:-.005em;word-break:break-word}
+  ul.entries .dt{font-size:11px;font-weight:500;color:var(--cream-faint);margin-top:4px;letter-spacing:.04em}
+  .empty{font-size:13px;color:var(--cream-faint);font-weight:500;line-height:1.6}
+
+  textarea{
+    font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    font-size:11.5px;line-height:1.5;width:100%;height:190px;resize:vertical;
+    color:var(--cream);background:rgba(0,0,0,.32);
+    border:1px solid var(--line);border-radius:10px;padding:14px;
+  }
+  textarea:focus{outline:none;border-color:var(--red)}
+
+  ol.steps{margin:0 0 0 18px;font-size:13px;line-height:1.85;color:var(--cream-dim);font-weight:500}
+  ol.steps b{color:var(--cream);font-weight:700}
+  code{
+    font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;font-size:12px;
+    background:rgba(255,248,225,.09);padding:2px 6px;border-radius:4px;
+  }
+  .warn{
+    font-size:12.5px;line-height:1.65;color:var(--cream-dim);font-weight:500;
+    border-left:2px solid var(--red);padding-left:14px;margin-top:16px;
+  }
+  .warn b{color:var(--cream);font-weight:700}
+  .hide{display:none}
+  footer{
+    margin-top:36px;text-align:center;font-size:10.5px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--cream-faint);
+  }
+  footer a{color:inherit}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <img class="emblem" src="/assets/img/redd-marine-emblem.png" alt="Redd Marine">
+    <span class="badge">Kit Access</span>
+    <h1>Who can open the kit</h1>
+    <p>Add a password for a builder before a meeting, or take one away afterwards. This page hands you a file to paste into GitHub — nothing here changes the live site by itself.</p>
+  </header>
+
+  <!-- ── 1 · unlock ─────────────────────────────────────────────── -->
+  <section class="card" id="lockCard">
+    <h2>Step 1 · Admin phrase</h2>
+    <form id="unlockForm" autocomplete="off">
+      <div class="field">
+        <label for="phrase">Your admin phrase</label>
+        <input id="phrase" type="password" autocapitalize="none" autocorrect="off"
+               spellcheck="false" placeholder="xxxx-xxxx-xxxx-xxxx"
+               autocomplete="current-password">
+      </div>
+      <div class="row"><button type="submit" id="unlockBtn">Unlock</button></div>
+      <div class="msg" id="lockMsg" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <!-- ── 2 · manage ─────────────────────────────────────────────── -->
+  <div id="manager" class="hide">
+
+    <section class="card">
+      <h2>Current passwords</h2>
+      <ul class="entries" id="list"></ul>
+      <p class="empty hide" id="emptyNote">No passwords left. Nobody can open the kit until you add one.</p>
+    </section>
+
+    <section class="card">
+      <h2>Add a password</h2>
+      <form id="addForm" autocomplete="off">
+        <div class="field">
+          <label for="label">Who is it for</label>
+          <input id="label" type="text" placeholder="Cape Fear Dock Builders — Sept 12 meeting"
+                 autocomplete="off" maxlength="80">
+        </div>
+        <div class="field">
+          <label for="newpw">Password</label>
+          <input id="newpw" type="text" autocapitalize="none" autocorrect="off"
+                 spellcheck="false" placeholder="press Generate one, or type 12+ characters"
+                 autocomplete="off">
+        </div>
+        <div class="row">
+          <button type="button" class="ghost" id="genBtn">Generate one</button>
+          <button type="submit" id="addBtn">Add password</button>
+        </div>
+        <div class="msg" id="addMsg" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Step 2 · The updated file</h2>
+      <textarea id="out" readonly spellcheck="false"></textarea>
+      <div class="row">
+        <button type="button" class="ghost" id="copyBtn">Copy to clipboard</button>
+        <button type="button" id="dlBtn">Download access.json</button>
+      </div>
+      <div class="msg" id="outMsg" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <h2>Step 3 · Put it live</h2>
+      <ol class="steps">
+        <li>Open <b>github.com/fordtate/ReddMarine</b></li>
+        <li>Go to <code>docs</code> &rarr; <code>kit</code> &rarr; <code>access.json</code></li>
+        <li>Click the <b>pencil icon</b> (Edit this file)</li>
+        <li><b>Select all</b> in the editor and paste what you copied above</li>
+        <li><b>Commit changes</b> &rarr; <b>Commit directly to the main branch</b></li>
+        <li>Wait about a minute for the site to rebuild, then test the new password at <b>/kit/</b></li>
+      </ol>
+      <div class="warn">
+        <b>A removed password stops working the moment you commit</b>, but anyone who already opened the kit could have saved the page. Treat removal as closing the door, not as taking the copy back.
+      </div>
+    </section>
+
+  </div>
+
+  <footer><a href="/kit/">&larr; Back to the kit</a></footer>
+</div>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════════════════
+   The admin phrase wraps the same content key every demo password wraps.
+   Unlocking recovers that key here in the browser; adding a password just
+   wraps another copy of it under the new password. Nothing is sent anywhere
+   — the output is a file you paste into GitHub yourself.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const $ = id => document.getElementById(id);
+const b64   = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64 = s   => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const rand  = n   => crypto.getRandomValues(new Uint8Array(n));
+
+let ACCESS = null;        // the working copy of access.json
+let CONTENT_KEY = null;   // raw bytes, recovered by the admin phrase
+
+function say(el, text, cls){ el.textContent = text; el.className = 'msg' + (cls ? ' ' + cls : ''); }
+
+async function deriveWrappingKey(password, salt, kdf, usages){
+  const base = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']
+  );
+  return crypto.subtle.deriveKey(
+    { name:'PBKDF2', salt, iterations:kdf.iterations, hash:kdf.hash },
+    base, { name:'AES-GCM', length:kdf.keyLength || 256 }, false, usages
+  );
+}
+
+async function wrapUnder(password){
+  const salt = rand(16), iv = rand(12);
+  const wk = await deriveWrappingKey(password, salt, ACCESS.kdf, ['encrypt']);
+  const key = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, wk, CONTENT_KEY);
+  return { salt: b64(salt), iv: b64(iv), key: b64(key) };
+}
+
+/* ── unlock ─────────────────────────────────────────────────────────── */
+$('unlockForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const phrase = $('phrase').value.trim();
+  if(!phrase) return;
+
+  $('unlockBtn').disabled = true;
+  say($('lockMsg'), 'Checking…', 'busy');
+  await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+
+  try{
+    ACCESS = await (await fetch('access.json', {cache:'no-store'})).json();
+    const wk = await deriveWrappingKey(phrase, unb64(ACCESS.admin.salt), ACCESS.kdf, ['decrypt']);
+    CONTENT_KEY = new Uint8Array(await crypto.subtle.decrypt(
+      { name:'AES-GCM', iv: unb64(ACCESS.admin.iv) }, wk, unb64(ACCESS.admin.key)
+    ));
+  }catch(_){
+    say($('lockMsg'), 'That is not the admin phrase.', 'err');
+    $('unlockBtn').disabled = false;
+    $('phrase').select();
+    return;
+  }
+
+  $('phrase').value = '';
+  $('lockCard').classList.add('hide');
+  $('manager').classList.remove('hide');
+  render();
+});
+
+/* ── the list ───────────────────────────────────────────────────────── */
+function render(){
+  const list = $('list');
+  list.textContent = '';
+
+  ACCESS.entries.forEach((entry, i) => {
+    const li  = document.createElement('li');
+    const who = document.createElement('div');
+    who.className = 'who';
+
+    const nm = document.createElement('div');
+    nm.className = 'nm';
+    nm.textContent = entry.label || 'Untitled';
+
+    const dt = document.createElement('div');
+    dt.className = 'dt';
+    dt.textContent = entry.added ? 'Added ' + entry.added : 'No date recorded';
+
+    who.append(nm, dt);
+
+    const rm = document.createElement('button');
+    rm.type = 'button';
+    rm.className = 'danger';
+    rm.textContent = 'Remove';
+    rm.addEventListener('click', () => {
+      ACCESS.entries.splice(i, 1);
+      render();
+      say($('outMsg'), 'Removed. Paste the file below into GitHub to make it real.', 'ok');
+    });
+
+    li.append(who, rm);
+    list.append(li);
+  });
+
+  $('emptyNote').classList.toggle('hide', ACCESS.entries.length > 0);
+  $('out').value = JSON.stringify(ACCESS, null, 2) + '\n';
+}
+
+/* ── generate a password ─────────────────────────────────────────────
+   payload.enc is a public file, so an attacker can grind guesses offline for
+   as long as they like. PBKDF2 slows that down; the password's own entropy is
+   what actually stops it. Base32 without the characters people mistype
+   (i, l, o, u, 0, 1): 30 symbols, ~4.9 bits each, 12 characters ~59 bits. */
+const ALPHABET = '23456789abcdefghjkmnpqrstvwxyz';
+
+function code(chars){
+  const out = [];
+  while(out.length < chars){
+    // rejection sampling: a plain % over 256 would bias the first 16 symbols
+    for(const b of crypto.getRandomValues(new Uint8Array(chars * 2))){
+      if(b >= 240) continue;
+      out.push(ALPHABET[b % ALPHABET.length]);
+      if(out.length === chars) break;
+    }
+  }
+  return out.join('').replace(/(.{4})(?=.)/g, '$1-');
+}
+
+$('genBtn').addEventListener('click', () => {
+  $('newpw').value = code(12);
+  $('newpw').focus();
+});
+
+/* ── add a password ─────────────────────────────────────────────────── */
+$('addForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const label = $('label').value.trim();
+  const password = $('newpw').value.trim();
+
+  if(!label)              return say($('addMsg'), 'Give it a name so you know whose it is.', 'err');
+  if(password.replace(/-/g, '').length < 12){
+    return say($('addMsg'),
+      'Too short. Anyone can download the encrypted kit and guess at it offline, ' +
+      'so use 12+ characters — or just press Generate one.', 'err');
+  }
+
+  $('addBtn').disabled = true;
+  say($('addMsg'), 'Wrapping the key…', 'busy');
+  await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+
+  try{
+    ACCESS.entries.push({
+      label,
+      added: new Date().toISOString().slice(0, 10),
+      ...await wrapUnder(password),
+    });
+    render();
+    say($('addMsg'), 'Added "' + label + '". Copy the file below into GitHub to make it live.', 'ok');
+    say($('outMsg'), '');
+    $('label').value = '';
+    $('newpw').value = '';
+  }catch(_){
+    say($('addMsg'), 'Could not add that one. Try again.', 'err');
+  }
+  $('addBtn').disabled = false;
+});
+
+/* ── copy / download ────────────────────────────────────────────────── */
+$('copyBtn').addEventListener('click', async () => {
+  const text = $('out').value;
+  try{
+    await navigator.clipboard.writeText(text);
+    say($('outMsg'), 'Copied. Now paste it over access.json in GitHub.', 'ok');
+  }catch(_){
+    $('out').focus();
+    $('out').select();
+    say($('outMsg'), 'Selected it for you — press Cmd-C (or Ctrl-C) to copy.', 'busy');
+  }
+});
+
+$('dlBtn').addEventListener('click', () => {
+  const blob = new Blob([$('out').value], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'access.json';
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  say($('outMsg'), 'Downloaded. Upload it over docs/kit/access.json in GitHub.', 'ok');
+});
+
+$('phrase').focus();
+</script>
+</body>
+</html>
