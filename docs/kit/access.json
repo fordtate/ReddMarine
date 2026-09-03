@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "note": "Wrapped keys only. Editable through kit/admin.html — no terminal needed.",
+  "version": 2,
+  "note": "Wrapped keys only. Managed through kit/admin.html — no terminal needed.",
   "payload": "payload.enc",
   "cipher": "AES-GCM",
   "kdf": {
@@ -10,17 +10,26 @@
     "keyLength": 256
   },
   "admin": {
-    "salt": "vyNPwdIHeQ9v+cdQGXtXqg==",
-    "iv": "l4urgAXVfFaM9i2b",
-    "key": "bDMRSOpIVclilVUXgpwJEDS11ff7ZpVZnqd4YctXuToUHMoci7l/925OvyQU6JV/"
+    "salt": "iQYdEAoxB3vUwKPSc8NJ1g==",
+    "iv": "mtbjiMxALEEwQdgq",
+    "key": "j5yn2YBQ37Ps12F4ZCAzeDWt261pFjduhX8jGjgeC8v8nOEmfG4CEqiDxQGmJ80T"
+  },
+  "vault": {
+    "salt": "/NWTv47LeILSHyAwd7prkA==",
+    "iv": "bNaRZ72wUxKKR6Op",
+    "key": "SXMco23uh1VojuHaUHb17se320A1c640kpmApS/2m95KdNaB60ZpEUU6wv+2d09d"
   },
   "entries": [
     {
       "label": "Demo — first builder meetings",
       "added": "2026-09-03",
-      "salt": "XWKSchaxTtq8BD9OSZUbtw==",
-      "iv": "zRsZBd1i2Yeak53A",
-      "key": "tJDOZFaXKAcnDPR2nz6K/rVlVZcOCvfLp4rlGwGXDKzoCokIfm3WaYXZzTVWOGXO"
+      "salt": "tDmd2X+kRGt5zyQnGixDYQ==",
+      "iv": "fHwkArbjOpRlNRRR",
+      "key": "7TW1pBm4Vo/Ju6QUgjJET90cY1vsgbchJBblaKlL3aApIjl7IHHPZXbE5T4RzYYI",
+      "secret": {
+        "iv": "HtOCPNwFQ/mmGeMK",
+        "ct": "yfZdvkUbEPLCHEyOAZTClNQIMjnMSIZZXsuI3Fse"
+      }
     }
   ]
 }

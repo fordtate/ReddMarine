@@ -2,22 +2,28 @@
 /**
  * Redd Marine — builds the encrypted interview kit for static hosting.
  *
- *   node Strategy/demo-kit/build-kit.mjs                 # re-encrypt, keep passwords
- *   node Strategy/demo-kit/build-kit.mjs --init          # fresh key + fresh passwords
+ *   node build-kit.mjs --init                     fresh key, fresh passwords
+ *   KIT_ADMIN_PHRASE=... node build-kit.mjs       re-encrypt, keep passwords
+ *   KIT_ADMIN_PHRASE=... KIT_NEW_ADMIN_PHRASE=... node build-kit.mjs --set-admin
  *
- * What it does
+ * How it works
  * ------------
- * prototype.html is encrypted once, with a random 256-bit AES-GCM "content key".
- * That content key is then wrapped separately under each demo password (and under
- * the admin phrase) using PBKDF2-SHA256. docs/kit/index.html asks for a password,
- * tries each wrapped copy, and on success unwraps the content key and decrypts the
- * kit in the browser. The plaintext never sits on the server.
+ * prototype.html is encrypted once under a random 256-bit AES-GCM "content key".
+ * That content key is never stored on its own — only as one PBKDF2-SHA256-wrapped
+ * copy per password. docs/kit/index.html asks for a password, tries each wrapped
+ * copy, unwraps the content key and decrypts the kit in the browser. The plaintext
+ * never sits on the server and the password never leaves the device.
  *
- * Re-running without --init reuses the existing content key, so every password
- * that already works keeps working — only the payload is re-encrypted. That is
- * the normal case: you changed the prototype and want the live copy updated.
+ * The vault (v2)
+ * --------------
+ * Wrapping is one-way, so the admin page could never show you an existing
+ * password. A second random key — the vault key — is wrapped under the admin
+ * phrase alone, and each entry carries its password encrypted under it. Unlocking
+ * with the admin phrase therefore reveals every password for editing. Anyone
+ * without the admin phrase sees only ciphertext, and a demo password unwraps the
+ * content key but not the vault.
  *
- * Uses WebCrypto, the same primitives the two browser pages use, so the formats
+ * Uses WebCrypto, the same primitives the browser pages use, so the formats
  * cannot drift apart.
  */
 
@@ -41,56 +47,54 @@ const IV_BYTES = 12;
 const b64 = buf => Buffer.from(buf).toString('base64');
 const unb64 = s => new Uint8Array(Buffer.from(s, 'base64'));
 const rand = n => crypto.getRandomValues(new Uint8Array(n));
+const enc = new TextEncoder();
+const dec = new TextDecoder();
 
 async function deriveWrappingKey(password, salt) {
   const base = await crypto.subtle.importKey(
-    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']
   );
   return crypto.subtle.deriveKey(
     { name: 'PBKDF2', salt, iterations: ITERATIONS, hash: 'SHA-256' },
-    base,
-    { name: 'AES-GCM', length: 256 },
-    false,
-    ['encrypt', 'decrypt']
+    base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
   );
 }
 
-/** Wrap the raw content key under one password. */
-async function wrapUnder(password, rawContentKey) {
-  const salt = rand(SALT_BYTES);
-  const iv = rand(IV_BYTES);
-  const wrappingKey = await deriveWrappingKey(password, salt);
-  const key = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, wrappingKey, rawContentKey);
+/** Wrap raw key bytes under a password. */
+async function wrapUnder(password, rawKey) {
+  const salt = rand(SALT_BYTES), iv = rand(IV_BYTES);
+  const wk = await deriveWrappingKey(password, salt);
+  const key = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, wk, rawKey);
   return { salt: b64(salt), iv: b64(iv), key: b64(key) };
 }
 
-/** Recover the raw content key from an existing entry — used on re-encrypt. */
-async function unwrapWith(password, entry) {
-  const wrappingKey = await deriveWrappingKey(password, unb64(entry.salt));
+/** Recover raw key bytes from a wrapped record. */
+async function unwrapWith(password, rec) {
+  const wk = await deriveWrappingKey(password, unb64(rec.salt));
   return new Uint8Array(await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: unb64(entry.iv) }, wrappingKey, unb64(entry.key)
+    { name: 'AES-GCM', iv: unb64(rec.iv) }, wk, unb64(rec.key)
   ));
 }
 
-/**
- * payload.enc sits in a public repo, so a password is the only thing between a
- * stranger and the kit. The attacker gets the file and can grind offline, so the
- * password's own entropy has to carry the weight — PBKDF2 only slows the grind,
- * it does not stop it.
- *
- * Crockford-style base32 minus the characters people mistype (i, l, o, u, 0, 1):
- * 30 symbols, ~4.9 bits each. 12 characters is ~59 bits, 16 is ~78. Both are far
- * out of reach of an offline GPU attack, and both are short enough to text to a
- * builder or type on an iPad.
- */
-const ALPHABET = '23456789abcdefghjkmnpqrstvwxyz';
+/** Store a password inside the vault, so the admin page can show it later. */
+async function seal(vaultKey, text) {
+  const iv = rand(IV_BYTES);
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, vaultKey, enc.encode(text));
+  return { iv: b64(iv), ct: b64(ct) };
+}
 
+async function importVaultKey(raw) {
+  return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
+}
+
+/** Readable default for a seeded password. Short on purpose — see the README. */
+const ALPHABET = '23456789abcdefghjkmnpqrstvwxyz';
 function code(chars) {
-  // rejection sampling — a plain % over 256 would bias the first 16 symbols
   const out = [];
   while (out.length < chars) {
+    // rejection sampling — a plain % over 256 would bias the first 16 symbols
     for (const b of crypto.getRandomValues(new Uint8Array(chars * 2))) {
-      if (b >= 240) continue;                 // 240 = 8 * 30, the largest clean multiple
+      if (b >= 240) continue;              // 240 = 8 * 30, the largest clean multiple
       out.push(ALPHABET[b % ALPHABET.length]);
       if (out.length === chars) break;
     }
@@ -100,18 +104,18 @@ function code(chars) {
 
 async function main() {
   const init = process.argv.includes('--init');
+  const setAdmin = process.argv.includes('--set-admin');
+  const phrase = process.env.KIT_ADMIN_PHRASE;
+  const newPhrase = process.env.KIT_NEW_ADMIN_PHRASE;
 
   if (!existsSync(SOURCE)) throw new Error('missing ' + SOURCE);
   await mkdir(OUT_DIR, { recursive: true });
 
   const html = await readFile(SOURCE);
-  let access, rawContentKey, seeded = null;
+  let access, contentRaw, vaultRaw, seeded = null;
 
   if (!init && existsSync(ACCESS)) {
-    // Re-encrypt in place: recover the existing content key so every live
-    // password keeps working.
     access = JSON.parse(await readFile(ACCESS, 'utf8'));
-    const phrase = process.env.KIT_ADMIN_PHRASE;
     if (!phrase) {
       throw new Error(
         'access.json exists, so the content key has to be recovered to keep the\n' +
@@ -121,32 +125,56 @@ async function main() {
         'password already handed out stops working).'
       );
     }
-    rawContentKey = await unwrapWith(phrase, access.admin);
+    contentRaw = await unwrapWith(phrase, access.admin);
+
+    if (access.vault) {
+      vaultRaw = await unwrapWith(phrase, access.vault);
+    } else {
+      // upgrading a v1 file: mint a vault, but the old passwords were never
+      // recorded, so they stay unreadable until they are changed
+      vaultRaw = rand(32);
+      console.log('Upgrading to v2: added a vault. Existing passwords still work,');
+      console.log('but cannot be displayed — they were never stored. Set new ones');
+      console.log('in admin.html to make them visible.');
+    }
     console.log('Recovered the content key; %d password(s) preserved.', access.entries.length);
   } else {
-    rawContentKey = rand(32);
-    const demo  = code(12);   // ~59 bits
-    const admin = code(16);   // ~78 bits
+    contentRaw = rand(32);
+    vaultRaw = rand(32);
+    const vk = await importVaultKey(vaultRaw);
+    const demo = process.env.KIT_DEMO_PASSWORD || code(12);
+    const admin = newPhrase || process.env.KIT_ADMIN_PHRASE || code(16);
     access = {
-      version: 1,
-      note: 'Wrapped keys only. Editable through kit/admin.html — no terminal needed.',
+      version: 2,
+      note: 'Wrapped keys only. Managed through kit/admin.html — no terminal needed.',
       payload: 'payload.enc',
       cipher: 'AES-GCM',
       kdf: { name: 'PBKDF2', hash: 'SHA-256', iterations: ITERATIONS, keyLength: 256 },
-      admin: await wrapUnder(admin, rawContentKey),
+      admin: await wrapUnder(admin, contentRaw),
+      vault: await wrapUnder(admin, vaultRaw),
       entries: [{
         label: 'Demo — first builder meetings',
         added: new Date().toISOString().slice(0, 10),
-        ...await wrapUnder(demo, rawContentKey),
+        ...await wrapUnder(demo, contentRaw),
+        secret: await seal(vk, demo),
       }],
     };
     seeded = { demo, admin };
   }
 
+  if (setAdmin) {
+    if (!newPhrase) throw new Error('--set-admin needs KIT_NEW_ADMIN_PHRASE set.');
+    access.admin = await wrapUnder(newPhrase, contentRaw);
+    access.vault = await wrapUnder(newPhrase, vaultRaw);
+    access.version = 2;
+    console.log('Admin phrase changed. Demo passwords are untouched.');
+  } else if (!access.vault) {
+    access.vault = await wrapUnder(phrase, vaultRaw);
+    access.version = 2;
+  }
+
   // Encrypt the kit itself under the content key.
-  const contentKey = await crypto.subtle.importKey(
-    'raw', rawContentKey, 'AES-GCM', false, ['encrypt']
-  );
+  const contentKey = await crypto.subtle.importKey('raw', contentRaw, 'AES-GCM', false, ['encrypt']);
   const iv = rand(IV_BYTES);
   const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, contentKey, html);
 
@@ -160,13 +188,14 @@ async function main() {
 
   console.log('payload.enc  %d KB (from %d KB of HTML)',
     Math.round(out.length / 1024), Math.round(html.length / 1024));
-  console.log('access.json  %d password(s) + 1 admin phrase', access.entries.length);
+  console.log('access.json  v%d · %d password(s) + 1 admin phrase',
+    access.version, access.entries.length);
 
   if (seeded) {
-    console.log('\n──────── WRITE THESE DOWN — they are not recoverable ────────');
+    console.log('\n──────── WRITE THESE DOWN ────────');
     console.log('  demo password : %s', seeded.demo);
     console.log('  admin phrase  : %s', seeded.admin);
-    console.log('────────────────────────────────────────────────────────────');
+    console.log('──────────────────────────────────');
   }
 }
 

@@ -73,10 +73,24 @@ Passing the admin phrase keeps every password that is already handed out working
 `--init` instead generates a new content key and new passwords, which invalidates
 every password already given to a builder.
 
-**To add or remove a password**, no terminal: go to
-**www.reddmarine.com/kit/admin.html**, enter the admin phrase, make the change,
-and paste the file it gives you over `docs/kit/access.json` in the GitHub web UI.
-The page itself lists the exact clicks.
+**To manage passwords**, no terminal: go to **www.reddmarine.com/kit/admin.html**
+and enter the admin phrase. That opens a management screen listing every password
+in the clear, each one editable — change the password, rename who it is for, add
+one, remove one, or rotate the admin phrase itself. Then paste the file it builds
+over `docs/kit/access.json` in the GitHub web UI. The page lists the exact clicks.
+
+Wrapping a key is one-way, so a wrapped password could never be read back. To make
+them readable, `access.json` also carries a **vault**: a second random key wrapped
+under the admin phrase alone, with each password encrypted under it. So the admin
+phrase reveals every password, a demo password unwraps the kit but not the vault,
+and anyone with neither sees only ciphertext.
+
+To rotate the admin phrase from the terminal instead:
+
+```
+KIT_ADMIN_PHRASE="old" KIT_NEW_ADMIN_PHRASE="new" \
+  node Strategy/demo-kit/build-kit.mjs --set-admin
+```
 
 ## Site asset map
 
