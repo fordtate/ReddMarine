@@ -282,10 +282,21 @@ form.addEventListener('submit', async e => {
 
 /* Carry the phrase across in sessionStorage so admin.html unlocks straight
    away instead of asking for it a second time. Same origin, this tab only,
-   and read exactly once. Never in the URL, where it would land in history. */
+   read exactly once, and stamped so a stray copy cannot sit there. Never in
+   the URL, where it would land in history.
+
+   The cache-buster matters: Pages serves HTML with max-age=600, so anyone who
+   has opened admin.html in the last ten minutes would otherwise get a stale
+   copy that does not know about the hand-off and would ask for the phrase
+   again. The page is 17 KB and opened rarely, so caching it buys nothing. */
 manageBtn.addEventListener('click', () => {
-  try{ sessionStorage.setItem('rm_admin', admin.password); }catch(_){}
-  location.href = 'admin.html';
+  try{
+    sessionStorage.setItem('rm_admin', JSON.stringify({
+      phrase: admin.password,
+      ts: Date.now(),
+    }));
+  }catch(_){}
+  location.href = 'admin.html?k=' + Date.now();
 });
 
 openBtn.addEventListener('click', async () => {

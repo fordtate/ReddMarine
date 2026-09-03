@@ -572,14 +572,20 @@ $('dlBtn').addEventListener('click', () => {
 });
 
 /* Arrived from the gate after the admin phrase already verified there?
-   Consume it once and unlock, so nobody types the same phrase twice. */
+   Consume it once and unlock, so nobody types the same phrase twice.
+   Anything older than a minute is treated as stale and dropped rather than
+   used — a hand-off that did not land promptly should not sit around. */
 (function fromGate(){
-  let handed = null;
+  let phrase = null;
   try{
-    handed = sessionStorage.getItem('rm_admin');
-    sessionStorage.removeItem('rm_admin');   // one-shot, whatever happens next
+    const raw = sessionStorage.getItem('rm_admin');
+    sessionStorage.removeItem('rm_admin');      // one-shot, whatever happens next
+    if(raw){
+      const handed = JSON.parse(raw);
+      if(handed && handed.phrase && Date.now() - handed.ts < 60000) phrase = handed.phrase;
+    }
   }catch(_){}
-  if(handed) unlock(handed);
+  if(phrase) unlock(phrase);
   else $('phrase').focus();
 })();
 </script>
