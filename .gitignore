@@ -1,2 +1,8 @@
+# OS cruft
 .DS_Store
+
+# Tooling
 .claude/
+
+# Superseded material, kept locally only
+_ARCHIVE/
