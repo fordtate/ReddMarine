@@ -22,96 +22,187 @@
     --red:#EF3513;
     --cream:#FFF8E1;
     --cream-dim:rgba(255,248,225,.58);
+    --cream-faint:rgba(255,248,225,.34);
     --line:rgba(255,248,225,.14);
+    --ok:#4FD19A;
+    --warn:#F5B841;
+    --mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
+  html{height:100%}
   body{
-    background:var(--ink);
-    color:var(--cream);
+    background:var(--ink);color:var(--cream);
     font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
-    display:flex;align-items:center;justify-content:center;
-    min-height:100dvh;padding:32px;position:relative;overflow:hidden;
+    min-height:100dvh;
   }
-  body::before{
+  .hide{display:none !important}
+
+  /* ── gate ──────────────────────────────────────────────────── */
+  body.mode-gate{
+    display:flex;align-items:center;justify-content:center;
+    padding:32px;position:relative;overflow:hidden;
+  }
+  body.mode-gate::before{
     content:"";position:absolute;top:50%;left:50%;
     width:900px;height:900px;transform:translate(-50%,-50%);
     background:radial-gradient(circle, rgba(239,50,45,.16), transparent 60%);
     pointer-events:none;
   }
-  main{position:relative;max-width:430px;width:100%;text-align:center}
-  .emblem{width:min(150px,42vw);margin:0 auto 30px;display:block}
+  #gateView{position:relative;max-width:430px;width:100%;text-align:center}
+  #gateView .emblem{width:min(150px,42vw);margin:0 auto 30px;display:block}
   .badge{
     display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.28em;
     text-transform:uppercase;color:var(--red);
     border:1px solid var(--line);border-radius:8px;padding:8px 15px;
   }
-  h1{
+  #gateView h1{
     font-size:clamp(21px,3.4vw,27px);font-weight:800;letter-spacing:-.01em;
     line-height:1.3;margin:20px auto 12px;max-width:20ch;
   }
-  p.sub{
+  #gateView p.sub{
     color:var(--cream-dim);font-size:14px;font-weight:500;line-height:1.65;
     max-width:38ch;margin:0 auto 30px;
   }
-
-  form{display:flex;flex-direction:column;gap:12px;text-align:left}
-  label{
-    font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--cream-dim);
-  }
-  input{
-    font:inherit;font-size:16px;font-weight:600;letter-spacing:.02em;
-    width:100%;padding:15px 17px;
-    color:var(--cream);background:rgba(255,248,225,.06);
-    border:1px solid var(--line);border-radius:11px;
-    transition:border-color .16s,background .16s;
-  }
-  input::placeholder{color:rgba(255,248,225,.26);font-weight:500;letter-spacing:0}
-  input:focus{outline:none;border-color:var(--red);background:rgba(255,248,225,.1)}
-  button{
-    font:inherit;font-size:14px;font-weight:700;letter-spacing:.04em;
-    padding:15px 20px;border:0;border-radius:11px;cursor:pointer;
-    background:var(--red);color:#fff;
-    transition:filter .16s,opacity .16s;
-  }
-  button:hover:not(:disabled){filter:brightness(1.1)}
-  button:disabled{opacity:.55;cursor:default}
-
-  .msg{
-    min-height:19px;font-size:12.5px;font-weight:600;line-height:1.5;
-    text-align:center;letter-spacing:.01em;
-  }
-  .msg.err{color:#FF7A63}
-  .msg.busy{color:var(--cream-dim)}
-
-  /* Shown only once the admin phrase has actually verified — a stranger never
-     learns that a management screen exists. */
-  .choice{text-align:left;display:none}
-  .choice.on{display:block;animation:rise .22s ease}
-  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .choice .who{
-    display:flex;align-items:center;gap:9px;margin-bottom:16px;
-    font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
-    color:#4FD19A;
-  }
-  .choice .who i{width:6px;height:6px;border-radius:50%;background:#4FD19A;flex:none}
-  .choice p{
-    color:var(--cream-dim);font-size:13px;font-weight:500;line-height:1.6;
-    margin-bottom:18px;
-  }
-  .choice .stack{display:flex;flex-direction:column;gap:10px}
-  button.ghost{
-    background:rgba(255,248,225,.08);color:var(--cream);border:1px solid var(--line);
-  }
-  button.ghost:hover:not(:disabled){background:rgba(255,248,225,.15);filter:none}
-
-  footer{
+  #gate{display:flex;flex-direction:column;gap:12px;text-align:left}
+  #gateView footer{
     margin-top:38px;font-size:10.5px;font-weight:600;letter-spacing:.12em;
     text-transform:uppercase;color:var(--cream-dim);opacity:.62;line-height:1.9;
   }
-  footer a{color:inherit}
+
+  /* ── console ───────────────────────────────────────────────── */
+  body.mode-console{display:block;padding:26px 22px 80px}
+  #consoleView{max-width:680px;margin:0 auto}
+
+  .topbar{
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    padding-bottom:16px;margin-bottom:22px;border-bottom:1px solid var(--line);
+  }
+  .topbar .mark{display:flex;align-items:center;gap:11px}
+  .topbar .mark img{height:32px;width:auto;display:block;border-radius:3px}
+  .topbar .wm{font-size:11.5px;font-weight:700;letter-spacing:.15em;line-height:1.15}
+  .topbar .wm small{display:block;font-weight:500;font-size:8px;letter-spacing:.22em;opacity:.5;margin-top:2px}
+  .topbar .spacer{flex:1}
+
+  h2{
+    font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--cream-faint);margin-bottom:5px;
+  }
+  .h2note{font-size:12.5px;color:var(--cream-dim);font-weight:500;line-height:1.6;margin-bottom:14px}
+  section{margin-bottom:28px}
+
+  /* the live-vs-draft banner: the thing that was missing */
+  .status{
+    border-radius:13px;padding:16px 18px;margin-bottom:26px;
+    border:1px solid var(--line);background:rgba(255,248,225,.045);
+  }
+  .status .k{
+    display:flex;align-items:center;gap:8px;
+    font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    margin-bottom:9px;
+  }
+  .status .k i{width:7px;height:7px;border-radius:50%;flex:none}
+  .status .v{font-size:14px;font-weight:600;line-height:1.6}
+  .status ul{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .status li{font-size:12.5px;font-weight:500;line-height:1.5;color:var(--cream-dim);padding-left:16px;position:relative}
+  .status li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%}
+  .status li.add::before{background:var(--ok)}
+  .status li.chg::before{background:var(--warn)}
+  .status li.del::before{background:#FF7A63}
+  .status.clean{border-color:rgba(79,209,154,.28)}
+  .status.clean .k{color:var(--ok)} .status.clean .k i{background:var(--ok)}
+  .status.pending{border-color:rgba(245,184,65,.34);background:rgba(245,184,65,.06)}
+  .status.pending .k{color:var(--warn)} .status.pending .k i{background:var(--warn)}
+
+  .card{
+    background:rgba(255,248,225,.045);border:1px solid var(--line);
+    border-radius:14px;padding:19px;
+  }
+  .card + .card{margin-top:12px}
+
+  label{
+    display:block;font-size:9.5px;font-weight:700;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--cream-faint);margin-bottom:7px;
+  }
+  input{
+    font:inherit;font-size:16px;font-weight:600;width:100%;padding:13px 15px;
+    color:var(--cream);background:rgba(255,248,225,.06);
+    border:1px solid var(--line);border-radius:10px;
+    transition:border-color .16s,background .16s;
+  }
+  input.pw{font-family:var(--mono);font-size:15px;letter-spacing:.02em}
+  input::placeholder{color:rgba(255,248,225,.24);font-weight:500;font-family:inherit}
+  input:focus{outline:none;border-color:var(--red);background:rgba(255,248,225,.1)}
+  input:disabled{opacity:.5}
+  .field + .field{margin-top:13px}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  @media (max-width:560px){.pair{grid-template-columns:1fr}}
+
+  button{
+    font:inherit;font-size:13.5px;font-weight:700;letter-spacing:.03em;
+    padding:13px 19px;border:0;border-radius:10px;cursor:pointer;
+    background:var(--red);color:#fff;transition:filter .16s,opacity .16s;
+  }
+  button:hover:not(:disabled){filter:brightness(1.1)}
+  button:disabled{opacity:.45;cursor:default}
+  button.ghost{background:rgba(255,248,225,.09);color:var(--cream);border:1px solid var(--line)}
+  button.ghost:hover:not(:disabled){background:rgba(255,248,225,.16);filter:none}
+  button.small{font-size:11.5px;padding:9px 13px;letter-spacing:.04em}
+  button.danger{background:none;color:#FF7A63;border:1px solid rgba(255,122,99,.32)}
+  button.danger:hover:not(:disabled){background:rgba(255,122,99,.12);filter:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+  .row.tight{margin-top:11px}
+  .row .grow{flex:1;min-width:150px}
+
+  .msg{margin-top:12px;font-size:12.5px;font-weight:600;line-height:1.55;min-height:17px}
+  .msg.err{color:#FF7A63}
+  .msg.ok{color:var(--ok)}
+  .msg.busy{color:var(--cream-dim)}
+  .msg.warn{color:var(--warn)}
+
+  .entry-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .entry-hd .n{
+    font-family:var(--mono);font-size:11px;font-weight:700;
+    width:24px;height:24px;border-radius:6px;display:grid;place-items:center;flex:none;
+    background:rgba(255,248,225,.1);color:var(--cream-dim);
+  }
+  .entry-hd .tag{
+    font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    padding:4px 8px;border-radius:5px;
+  }
+  .entry-hd .tag.add{background:rgba(79,209,154,.16);color:var(--ok)}
+  .entry-hd .tag.chg{background:rgba(245,184,65,.16);color:var(--warn)}
+  .entry-hd .added{font-size:11px;font-weight:500;color:var(--cream-faint);letter-spacing:.04em;margin-left:auto}
+
+  .check{
+    display:flex;gap:11px;align-items:flex-start;
+    font-size:12.5px;line-height:1.55;
+    padding:14px 16px;border-radius:11px;border:1px solid var(--line);
+    background:rgba(255,248,225,.04);
+  }
+  .check .dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px;background:var(--cream-faint)}
+  .check.pass{border-color:rgba(79,209,154,.3)} .check.pass .dot{background:var(--ok)} .check.pass b{color:var(--ok)}
+  .check.fail{border-color:rgba(255,122,99,.34)} .check.fail .dot{background:#FF7A63} .check.fail b{color:#FF7A63}
+  .check.busy .dot{background:var(--warn)}
+  .check span{color:var(--cream-dim);font-weight:500}
+  .check b{display:block;margin-bottom:3px;font-weight:700;color:var(--cream)}
+
+  textarea{
+    font-family:var(--mono);font-size:11px;line-height:1.5;width:100%;height:150px;resize:vertical;
+    color:var(--cream);background:rgba(0,0,0,.32);
+    border:1px solid var(--line);border-radius:10px;padding:13px;margin-top:12px;
+  }
+  textarea:focus{outline:none;border-color:var(--red)}
+  summary{cursor:pointer;font-size:12px;color:var(--cream-faint);font-weight:600;margin-top:14px;letter-spacing:.06em}
+
+  .paste-note{font-size:13px;line-height:1.7;color:var(--cream-dim);font-weight:500;margin-top:13px}
+  .paste-note b{color:var(--cream);font-weight:700}
+  .warnbox{
+    font-size:12.5px;line-height:1.65;color:var(--cream-dim);font-weight:500;
+    border-left:2px solid var(--red);padding-left:14px;margin-top:15px;
+  }
+  .warnbox b{color:var(--cream);font-weight:700}
+  .empty{font-size:13px;color:#FF7A63;font-weight:600;line-height:1.6;padding:10px 0}
 
   /* the spinner doubles as honest feedback: unwrapping really does take a moment */
   .dots::after{content:'';animation:dots 1.2s steps(4,end) infinite}
@@ -119,8 +210,10 @@
   @media (prefers-reduced-motion:reduce){.dots::after{content:'...';animation:none}}
 </style>
 </head>
-<body>
-<main>
+<body class="mode-gate">
+
+<!-- ══ GATE ═══════════════════════════════════════════════════ -->
+<div id="gateView">
   <img class="emblem" src="/assets/img/redd-marine-emblem.png" alt="Redd Marine">
 
   <span class="badge">Private Preview</span>
@@ -136,181 +229,712 @@
     <div class="msg" id="msg" role="status" aria-live="polite"></div>
   </form>
 
-  <div class="choice" id="choice">
-    <div class="who"><i></i> Admin phrase accepted</div>
-    <p>You can manage who has access, or open the kit the way a builder sees it.</p>
-    <div class="stack">
-      <button type="button" id="manageBtn">Manage passwords</button>
-      <button type="button" class="ghost" id="openBtn">Open the kit</button>
-    </div>
-  </div>
-
   <footer>
     Redd Marine &middot; Wrightsville Beach, NC<br>
     Concept prototype &middot; simulated data
   </footer>
-</main>
+</div>
+
+<!-- ══ CONSOLE ════════════════════════════════════════════════ -->
+<div id="consoleView" class="hide">
+
+  <div class="topbar">
+    <div class="mark">
+      <img src="/assets/img/redd-marine-emblem.png" alt="Redd Marine">
+      <div class="wm">REDD<small>MARINE</small></div>
+    </div>
+    <div class="spacer"></div>
+    <button type="button" class="ghost small" id="previewBtn">Preview as a builder</button>
+    <button type="button" class="ghost small" id="lockBtn">Lock</button>
+  </div>
+
+  <div class="status" id="status">
+    <div class="k"><i></i><span id="statusK">Loading</span></div>
+    <div class="v" id="statusV"></div>
+    <ul id="statusList"></ul>
+  </div>
+
+  <section>
+    <h2>Passwords</h2>
+    <div class="h2note">Each one opens the kit. Edit anything here — nothing reaches the live site until you publish it below.</div>
+    <div id="list"></div>
+    <p class="empty hide" id="emptyNote">No passwords left. Nobody could open the kit. Add one before publishing.</p>
+    <div class="row"><button type="button" class="ghost" id="addBtn">+ Add a password</button></div>
+  </section>
+
+  <section>
+    <h2>Admin phrase</h2>
+    <div class="h2note">Opens this console. Changing it leaves every password above working.</div>
+    <div class="card">
+      <div class="pair">
+        <div class="field">
+          <label for="adm1">New admin phrase</label>
+          <input id="adm1" class="pw" type="text" autocapitalize="none" autocorrect="off"
+                 spellcheck="false" autocomplete="off" placeholder="leave blank to keep it">
+        </div>
+        <div class="field">
+          <label for="adm2">Type it again</label>
+          <input id="adm2" class="pw" type="text" autocapitalize="none" autocorrect="off"
+                 spellcheck="false" autocomplete="off">
+        </div>
+      </div>
+      <div class="row tight">
+        <button type="button" id="admBtn">Stage new admin phrase</button>
+        <button type="button" class="ghost hide" id="admUndo">Undo</button>
+      </div>
+      <div class="msg" id="admMsg" role="status" aria-live="polite"></div>
+      <div class="warnbox">
+        <b>The vault holding every password above opens only with the admin phrase.</b>
+        If you publish a phrase you cannot reproduce, those passwords are gone for good. The check below tests the new phrase against the real file before publishing is allowed.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Safety check</h2>
+    <div class="h2note">Runs against the exact file you are about to publish, so a change that would lock you out cannot go live.</div>
+    <div class="check" id="check">
+      <span class="dot"></span>
+      <div><b id="checkTitle">Waiting</b><span id="checkBody">Edit something above and this will re-run.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Publish</h2>
+    <div class="h2note">GitHub Pages serves static files, so publishing is a commit. This is the whole step.</div>
+    <div class="row">
+      <button type="button" class="grow" id="publishBtn" disabled>Copy and open GitHub</button>
+      <button type="button" class="ghost" id="dlBtn">Download file</button>
+    </div>
+    <div class="msg" id="pubMsg" role="status" aria-live="polite"></div>
+    <div class="paste-note">
+      GitHub opens on <b>access.json</b>. Select all, paste, then <b>Commit changes</b>.
+    </div>
+    <details>
+      <summary>Show the file</summary>
+      <textarea id="out" readonly spellcheck="false"></textarea>
+    </details>
+  </section>
+
+  <section>
+    <h2>Confirm it went live</h2>
+    <div class="h2note">Checks the real site, not a timer. GitHub usually takes about a minute.</div>
+    <div class="row"><button type="button" class="ghost grow" id="verifyBtn">Check the live site</button></div>
+    <div class="msg" id="verMsg" role="status" aria-live="polite"></div>
+  </section>
+
+</div>
 
 <script>
 "use strict";
 /* ═══════════════════════════════════════════════════════════════════════
-   The kit itself is AES-GCM ciphertext (payload.enc) under a random content
-   key. That content key is stored only as a set of copies, each wrapped
-   under one password via PBKDF2-SHA256. Getting in means unwrapping the
-   content key with your password, then decrypting the payload — all in this
-   browser. The server never holds the plaintext and never sees the password.
+   One door. A demo password opens the kit; the admin phrase opens this
+   console and never opens the kit by accident.
+
+   The kit is AES-GCM ciphertext (payload.enc) under a random content key.
+   Each password holds its own PBKDF2-wrapped copy of that key. A second
+   "vault" key, wrapped under the admin phrase alone, holds the passwords
+   themselves so they can be read back and edited here.
+
+   This page cannot save anything — GitHub Pages is static, so publishing is
+   a commit. The interface says so plainly rather than pretending otherwise,
+   which is exactly what the previous version got wrong.
    ═══════════════════════════════════════════════════════════════════════ */
 
-const pw   = document.getElementById('pw');
-const go   = document.getElementById('go');
-const msg  = document.getElementById('msg');
-const form = document.getElementById('gate');
+const $ = id => document.getElementById(id);
+const b64   = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const unb64 = s   => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const rand  = n   => crypto.getRandomValues(new Uint8Array(n));
+const ENC = new TextEncoder(), DEC = new TextDecoder();
+const sameBytes = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+const yield_ = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+const bust = () => '?v=' + Date.now();
 
-const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const GITHUB_EDIT = 'https://github.com/fordtate/ReddMarine/edit/main/docs/kit/access.json';
 
-function say(text, cls){
-  msg.className = 'msg' + (cls ? ' ' + cls : '');
-  msg.innerHTML = '';
-  msg.append(document.createTextNode(text));
-  if(cls === 'busy'){
-    const d = document.createElement('span');
-    d.className = 'dots';
-    msg.append(d);
-  }
-}
+let LIVE = null;          // access.json exactly as the site is serving it
+let ACCESS = null;        // the draft being built
+let CONTENT = null;       // raw content key
+let VAULT = null;         // CryptoKey for the password vault
+let VAULT_RAW = null;     // raw vault key, needed to re-wrap on rotation
+let PHRASE = null;        // the admin phrase this session unlocked with
+let NEW_PHRASE = null;    // a staged rotation, or null
+let ROWS = [];
 
-async function deriveWrappingKey(password, salt, kdf){
-  const base = await crypto.subtle.importKey(
-    'raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']
-  );
+function say(el, text, cls){ el.textContent = text; el.className = 'msg' + (cls ? ' ' + cls : ''); }
+
+/* ── crypto helpers ──────────────────────────────────────────────────── */
+async function deriveWrappingKey(password, salt, kdf, usages){
+  const base = await crypto.subtle.importKey('raw', ENC.encode(password), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey(
     { name:'PBKDF2', salt, iterations:kdf.iterations, hash:kdf.hash },
-    base,
-    { name:'AES-GCM', length:kdf.keyLength || 256 },
-    false,
-    ['decrypt']
+    base, { name:'AES-GCM', length:kdf.keyLength || 256 }, false, usages
   );
 }
-
-/* Try one wrapped copy of the content key. A wrong password fails the GCM
-   auth tag, which throws — that throw IS the "wrong password" answer. */
-async function tryEntry(password, entry, kdf){
+async function wrapUnder(password, rawKey){
+  const salt = rand(16), iv = rand(12);
+  const wk = await deriveWrappingKey(password, salt, ACCESS.kdf, ['encrypt']);
+  const key = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, wk, rawKey);
+  return { salt: b64(salt), iv: b64(iv), key: b64(key) };
+}
+async function unwrap(password, rec, kdf){
   try{
-    const wrappingKey = await deriveWrappingKey(password, unb64(entry.salt), kdf);
+    const wk = await deriveWrappingKey(password, unb64(rec.salt), kdf, ['decrypt']);
     return new Uint8Array(await crypto.subtle.decrypt(
-      { name:'AES-GCM', iv: unb64(entry.iv) }, wrappingKey, unb64(entry.key)
+      { name:'AES-GCM', iv: unb64(rec.iv) }, wk, unb64(rec.key)
+    ));
+  }catch(_){ return null; }
+}
+async function seal(text){
+  const iv = rand(12);
+  const ct = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, VAULT, ENC.encode(text));
+  return { iv: b64(iv), ct: b64(ct) };
+}
+async function unseal(secret){
+  try{
+    return DEC.decode(await crypto.subtle.decrypt(
+      { name:'AES-GCM', iv: unb64(secret.iv) }, VAULT, unb64(secret.ct)
     ));
   }catch(_){ return null; }
 }
 
-/* Work out WHICH password this is. The admin record is checked first so an
-   admin can be told apart from a builder — same content key underneath, but a
-   very different set of things you are allowed to do with it. */
-async function identify(password){
-  const access = await (await fetch('access.json', {cache:'no-store'})).json();
+const ALPHABET = '23456789abcdefghjkmnpqrstvwxyz';
+function code(chars){
+  const out = [];
+  while(out.length < chars){
+    // rejection sampling: a plain % over 256 would bias the first 16 symbols
+    for(const b of crypto.getRandomValues(new Uint8Array(chars * 2))){
+      if(b >= 240) continue;
+      out.push(ALPHABET[b % ALPHABET.length]);
+      if(out.length === chars) break;
+    }
+  }
+  return out.join('').replace(/(.{4})(?=.)/g, '$1-');
+}
 
+/* ── the gate ────────────────────────────────────────────────────────── */
+const pw = $('pw'), go = $('go'), msg = $('msg'), form = $('gate');
+
+function busy(text){
+  msg.className = 'msg busy';
+  msg.textContent = text;
+  const d = document.createElement('span');
+  d.className = 'dots';
+  msg.append(d);
+}
+
+/* Admin is checked first, so the two roles can be told apart. */
+async function identify(password){
+  const access = await (await fetch('access.json' + bust(), {cache:'no-store'})).json();
   if(access.admin){
-    const rawKey = await tryEntry(password, access.admin, access.kdf);
-    if(rawKey) return { role:'admin', rawKey, access };
+    const raw = await unwrap(password, access.admin, access.kdf);
+    if(raw) return { role:'admin', raw, access };
   }
   for(const entry of access.entries){
-    const rawKey = await tryEntry(password, entry, access.kdf);
-    if(rawKey) return { role:'guest', rawKey, access };
+    const raw = await unwrap(password, entry, access.kdf);
+    if(raw) return { role:'guest', raw, access };
   }
   return null;
 }
 
 async function decryptKit(rawKey, access){
-  const blob = new Uint8Array(await (await fetch(access.payload, {cache:'no-store'})).arrayBuffer());
-  const contentKey = await crypto.subtle.importKey('raw', rawKey, 'AES-GCM', false, ['decrypt']);
-  const html = await crypto.subtle.decrypt(
-    { name:'AES-GCM', iv: blob.slice(0, 12) }, contentKey, blob.slice(12)
-  );
-  return new TextDecoder().decode(html);
+  const blob = new Uint8Array(await (await fetch(access.payload + bust(), {cache:'no-store'})).arrayBuffer());
+  const key = await crypto.subtle.importKey('raw', rawKey, 'AES-GCM', false, ['decrypt']);
+  return DEC.decode(await crypto.subtle.decrypt(
+    { name:'AES-GCM', iv: blob.slice(0, 12) }, key, blob.slice(12)
+  ));
 }
 
-/* Hand the whole tab over to the kit: full screen, real keyboard focus, and
+/* Hand the whole tab to the kit: full screen, real keyboard focus, and
    "Add to Home Screen" on an iPad behaves the way it should. */
 function handOver(html){
+  window.onbeforeunload = null;
   document.open();
   document.write(html);
   document.close();
 }
-
-const choice     = document.getElementById('choice');
-const manageBtn  = document.getElementById('manageBtn');
-const openBtn    = document.getElementById('openBtn');
-let admin = null;          // { rawKey, access, password } once verified
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const password = pw.value.trim();
   if(!password) return;
 
-  go.disabled = true;
-  pw.disabled = true;
-  say('Unlocking', 'busy');
+  go.disabled = pw.disabled = true;
+  busy('Unlocking');
 
   try{
-    // let the browser paint the busy state before PBKDF2 takes the thread
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+    await yield_();
     const who = await identify(password);
 
     if(!who){
-      say('That password does not open this kit.', 'err');
-      go.disabled = false;
-      pw.disabled = false;
+      say(msg, 'That password does not open this kit.', 'err');
+      go.disabled = pw.disabled = false;
       pw.select();
       return;
     }
 
     if(who.role === 'admin'){
-      // Don't just open the kit — an admin came here to do something else.
-      admin = { rawKey: who.rawKey, access: who.access, password };
-      form.style.display = 'none';
-      choice.classList.add('on');
+      PHRASE = password;
+      await openConsole(who.raw, who.access);
       return;
     }
-
-    handOver(await decryptKit(who.rawKey, who.access));
-  }catch(err){
-    say('Could not load the kit. Check your connection and try again.', 'err');
-    go.disabled = false;
-    pw.disabled = false;
-  }
-});
-
-/* Carry the phrase across in sessionStorage so admin.html unlocks straight
-   away instead of asking for it a second time. Same origin, this tab only,
-   read exactly once, and stamped so a stray copy cannot sit there. Never in
-   the URL, where it would land in history.
-
-   The cache-buster matters: Pages serves HTML with max-age=600, so anyone who
-   has opened admin.html in the last ten minutes would otherwise get a stale
-   copy that does not know about the hand-off and would ask for the phrase
-   again. The page is 17 KB and opened rarely, so caching it buys nothing. */
-manageBtn.addEventListener('click', () => {
-  try{
-    sessionStorage.setItem('rm_admin', JSON.stringify({
-      phrase: admin.password,
-      ts: Date.now(),
-    }));
-  }catch(_){}
-  location.href = 'admin.html?k=' + Date.now();
-});
-
-openBtn.addEventListener('click', async () => {
-  openBtn.disabled = manageBtn.disabled = true;
-  openBtn.textContent = 'Opening\u2026';
-  try{
-    handOver(await decryptKit(admin.rawKey, admin.access));
+    handOver(await decryptKit(who.raw, who.access));
   }catch(_){
-    openBtn.disabled = manageBtn.disabled = false;
-    openBtn.textContent = 'Open the kit';
+    say(msg, 'Could not load the kit. Check your connection and try again.', 'err');
+    go.disabled = pw.disabled = false;
   }
 });
 
-pw.addEventListener('input', () => { if(msg.className !== 'msg') say(''); });
+pw.addEventListener('input', () => { if(msg.className !== 'msg') say(msg, ''); });
+
+/* ── opening the console ─────────────────────────────────────────────── */
+async function openConsole(contentRaw, access){
+  CONTENT = contentRaw;
+  LIVE = access;
+  ACCESS = JSON.parse(JSON.stringify(access));
+  ACCESS.version = 2;
+
+  VAULT_RAW = access.vault ? await unwrap(PHRASE, access.vault, access.kdf) : null;
+  if(!VAULT_RAW){
+    // a pre-vault file: mint one, so anything set from here on is readable
+    VAULT_RAW = rand(32);
+    ACCESS.vault = null;          // buildDraft wraps it under the phrase
+  }
+  VAULT = await crypto.subtle.importKey('raw', VAULT_RAW, 'AES-GCM', false, ['encrypt','decrypt']);
+
+  ROWS = [];
+  for(let i = 0; i < access.entries.length; i++){
+    const e = access.entries[i];
+    const stored = e.secret ? await unseal(e.secret) : null;
+    ROWS.push({
+      label: e.label || '',
+      password: stored || '',
+      added: e.added || '',
+      known: stored !== null,
+      origIndex: i,
+      origLabel: e.label || '',
+      origPassword: stored || '',
+      wrapped: { salt:e.salt, iv:e.iv, key:e.key },
+    });
+  }
+
+  pw.value = '';
+  document.body.className = 'mode-console';
+  $('gateView').classList.add('hide');
+  $('consoleView').classList.remove('hide');
+  render();
+  scheduleBuild(0);
+  window.scrollTo(0, 0);
+}
+
+$('lockBtn').addEventListener('click', () => {
+  if(hasChanges() && !confirm('You have changes that have not been published. Leave anyway?')) return;
+  window.onbeforeunload = null;
+  location.href = './';
+});
+
+$('previewBtn').addEventListener('click', async () => {
+  $('previewBtn').disabled = true;
+  try{ handOver(await decryptKit(CONTENT, LIVE)); }
+  catch(_){ $('previewBtn').disabled = false; }
+});
+
+window.onbeforeunload = () => hasChanges() ? '' : undefined;
+
+/* ── the editable list ───────────────────────────────────────────────── */
+function rowState(row){
+  if(row.origIndex === null) return 'add';
+  if(row.known && row.password !== row.origPassword) return 'chg';
+  if(row.label !== row.origLabel) return 'chg';
+  return '';
+}
+
+function refreshTag(hd, row){
+  const old = hd.querySelector('.tag');
+  if(old) old.remove();
+  const st = rowState(row);
+  if(!st) return;
+  const tag = document.createElement('span');
+  tag.className = 'tag ' + st;
+  tag.textContent = st === 'add' ? 'New' : 'Changed';
+  hd.querySelector('.n').after(tag);
+}
+
+function render(){
+  const list = $('list');
+  list.textContent = '';
+
+  ROWS.forEach((row, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const hd = document.createElement('div');
+    hd.className = 'entry-hd';
+    const n = document.createElement('span');
+    n.className = 'n'; n.textContent = i + 1;
+    hd.append(n);
+
+    const added = document.createElement('span');
+    added.className = 'added';
+    added.textContent = row.added ? 'Added ' + row.added : '';
+    hd.append(added);
+    refreshTag(hd, row);
+
+    const f1 = document.createElement('div');
+    f1.className = 'field';
+    const l1 = document.createElement('label');
+    l1.textContent = 'Who it is for';
+    const labelInput = document.createElement('input');
+    labelInput.type = 'text';
+    labelInput.maxLength = 80;
+    labelInput.value = row.label;
+    labelInput.placeholder = 'Cape Fear Dock Builders — Sept 12';
+    l1.htmlFor = labelInput.id = 'label-' + i;
+    labelInput.addEventListener('input', () => {
+      row.label = labelInput.value;
+      refreshTag(hd, row);
+      scheduleBuild();
+    });
+    f1.append(l1, labelInput);
+
+    const f2 = document.createElement('div');
+    f2.className = 'field';
+    const l2 = document.createElement('label');
+    l2.textContent = row.known ? 'Password' : 'Password — never stored, type a new one to replace it';
+    const pwInput = document.createElement('input');
+    pwInput.type = 'text';
+    pwInput.className = 'pw';
+    pwInput.value = row.password;
+    pwInput.placeholder = row.known ? '' : 'set a new password';
+    pwInput.autocapitalize = 'none';
+    pwInput.autocorrect = 'off';
+    pwInput.spellcheck = false;
+    l2.htmlFor = pwInput.id = 'pw-' + i;
+    pwInput.addEventListener('input', () => {
+      row.password = pwInput.value;
+      row.known = true;
+      l2.textContent = 'Password';
+      refreshTag(hd, row);
+      scheduleBuild();
+    });
+    f2.append(l2, pwInput);
+
+    const actions = document.createElement('div');
+    actions.className = 'row tight';
+
+    const gen = document.createElement('button');
+    gen.type = 'button'; gen.className = 'ghost small'; gen.textContent = 'Generate';
+    gen.addEventListener('click', () => {
+      pwInput.value = row.password = code(12);
+      row.known = true;
+      l2.textContent = 'Password';
+      refreshTag(hd, row);
+      scheduleBuild();
+    });
+
+    const copy = document.createElement('button');
+    copy.type = 'button'; copy.className = 'ghost small'; copy.textContent = 'Copy';
+    copy.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(row.password);
+        copy.textContent = 'Copied';
+        setTimeout(() => { copy.textContent = 'Copy'; }, 1600);
+      }catch(_){ pwInput.select(); }
+    });
+
+    const rm = document.createElement('button');
+    rm.type = 'button'; rm.className = 'danger small'; rm.textContent = 'Remove';
+    rm.addEventListener('click', () => {
+      ROWS.splice(i, 1);
+      render();
+      scheduleBuild();
+    });
+
+    actions.append(gen, copy, rm);
+    card.append(hd, f1, f2, actions);
+    list.append(card);
+  });
+
+  $('emptyNote').classList.toggle('hide', ROWS.length > 0);
+}
+
+/* ── what changed, in plain language ─────────────────────────────────── */
+function diff(){
+  const added = [], changed = [], removed = [];
+  const seen = new Set();
+  for(const row of ROWS){
+    if(row.origIndex === null){ added.push(row.label || 'Untitled'); continue; }
+    seen.add(row.origIndex);
+    if(rowState(row) === 'chg') changed.push(row.label || 'Untitled');
+  }
+  LIVE.entries.forEach((e, i) => { if(!seen.has(i)) removed.push(e.label || 'Untitled'); });
+  return { added, changed, removed, admin: NEW_PHRASE !== null };
+}
+
+function hasChanges(){
+  if(!LIVE || !ROWS) return false;
+  const d = diff();
+  return !!(d.added.length || d.changed.length || d.removed.length || d.admin);
+}
+
+function renderStatus(){
+  const el = $('status'), list = $('statusList');
+  const d = diff();
+  list.textContent = '';
+
+  if(!hasChanges()){
+    el.className = 'status clean';
+    $('statusK').textContent = 'Live';
+    $('statusV').textContent = LIVE.entries.length === 1
+      ? '1 password is live. Nothing to publish.'
+      : LIVE.entries.length + ' passwords are live. Nothing to publish.';
+    return;
+  }
+
+  el.className = 'status pending';
+  $('statusK').textContent = 'Not published yet';
+  $('statusV').textContent =
+    LIVE.entries.length + (LIVE.entries.length === 1 ? ' password live' : ' passwords live') +
+    ' → ' + ROWS.length + ' in your draft';
+
+  const li = (cls, text) => {
+    const item = document.createElement('li');
+    item.className = cls; item.textContent = text;
+    list.append(item);
+  };
+  d.added.forEach(x => li('add', 'Added: ' + x));
+  d.changed.forEach(x => li('chg', 'Changed: ' + x));
+  d.removed.forEach(x => li('del', 'Removed: ' + x));
+  if(d.admin) li('chg', 'Admin phrase rotated');
+}
+
+/* ── build the draft, then prove it works ────────────────────────────── */
+let buildTimer = null, buildToken = 0;
+
+function setCheck(cls, title, body){
+  $('check').className = 'check ' + cls;
+  $('checkTitle').textContent = title;
+  $('checkBody').textContent = body;
+}
+
+/* Debounced: every keystroke otherwise triggers a PBKDF2 wrap per password,
+   which on an iPad would make typing feel like the page had hung. */
+function scheduleBuild(delay){
+  clearTimeout(buildTimer);
+  renderStatus();
+  setCheck('busy', 'Checking…', 'Building the file and testing every password against it.');
+  $('publishBtn').disabled = true;
+  buildTimer = setTimeout(buildDraft, delay === undefined ? 450 : delay);
+}
+
+async function buildDraft(){
+  const token = ++buildToken;
+
+  const entries = [];
+  for(const row of ROWS){
+    const password = row.password.trim();
+    if(!password){
+      // an opaque entry nobody has touched keeps its original wrapping
+      if(row.wrapped && row.wrapped.salt){
+        entries.push({ label: row.label, added: row.added, ...row.wrapped });
+      }
+      continue;
+    }
+    const wrapped = await wrapUnder(password, CONTENT);
+    const secret = await seal(password);
+    if(token !== buildToken) return;
+    entries.push({
+      label: row.label,
+      added: row.added || new Date().toISOString().slice(0, 10),
+      ...wrapped, secret,
+    });
+  }
+
+  const phrase = NEW_PHRASE || PHRASE;
+  if(NEW_PHRASE || !ACCESS.vault){
+    ACCESS.admin = await wrapUnder(phrase, CONTENT);
+    ACCESS.vault = await wrapUnder(phrase, VAULT_RAW);
+    if(token !== buildToken) return;
+  }
+
+  ACCESS.entries = entries;
+  $('out').value = JSON.stringify(ACCESS, null, 2) + '\n';
+
+  await selfTest(token, phrase);
+}
+
+/* The guard that makes publishing safe: decrypt the exact file about to be
+   handed over, with every password it is supposed to accept. */
+async function selfTest(token, phrase){
+  const draft = JSON.parse($('out').value);
+
+  if(!draft.entries.length){
+    setCheck('fail', 'Nobody could open the kit',
+      'The draft has no passwords. Add one before publishing.');
+    $('publishBtn').disabled = true;
+    return;
+  }
+
+  const failures = [], opaque = [];
+  for(const row of ROWS){
+    const password = row.password.trim();
+    if(!password){ opaque.push(row.label || 'Untitled'); continue; }
+    let ok = false;
+    for(const entry of draft.entries){
+      const raw = await unwrap(password, entry, draft.kdf);
+      if(token !== buildToken) return;
+      if(raw && sameBytes(raw, CONTENT)){ ok = true; break; }
+    }
+    if(!ok) failures.push(row.label || 'Untitled');
+  }
+
+  const adminRaw = await unwrap(phrase, draft.admin, draft.kdf);
+  const vaultRaw = draft.vault ? await unwrap(phrase, draft.vault, draft.kdf) : null;
+  if(token !== buildToken) return;
+
+  const adminOk = adminRaw && sameBytes(adminRaw, CONTENT);
+  const vaultOk = vaultRaw && sameBytes(vaultRaw, VAULT_RAW);
+
+  if(failures.length){
+    setCheck('fail', 'These would not open the kit',
+      failures.join(', ') + '. Publishing is blocked.');
+    $('publishBtn').disabled = true;
+    return;
+  }
+  if(!adminOk || !vaultOk){
+    setCheck('fail', 'The admin phrase would not open this file',
+      'Publishing is blocked so you cannot lock yourself out.');
+    $('publishBtn').disabled = true;
+    return;
+  }
+
+  const tested = ROWS.length - opaque.length;
+  let body = 'Tested ' + tested + (tested === 1 ? ' password' : ' passwords') +
+             ' and the admin phrase against the real file.';
+  if(opaque.length){
+    body += ' ' + opaque.join(', ') + ' could not be tested — that password was never stored.';
+  }
+  setCheck('pass', hasChanges() ? 'Safe to publish' : 'File is valid', body);
+  $('publishBtn').disabled = !hasChanges();
+}
+
+/* ── add ─────────────────────────────────────────────────────────────── */
+$('addBtn').addEventListener('click', () => {
+  ROWS.push({
+    label: '', password: code(12),
+    added: new Date().toISOString().slice(0, 10),
+    known: true, origIndex: null, origLabel: null, origPassword: null, wrapped: null,
+  });
+  render();
+  scheduleBuild();
+  const last = $('list').lastElementChild;
+  if(last) last.querySelector('input').focus();
+});
+
+/* ── stage an admin rotation ─────────────────────────────────────────── */
+$('admBtn').addEventListener('click', () => {
+  const a = $('adm1').value, b = $('adm2').value;
+  if(!a) return say($('admMsg'), 'Type the new phrase in both boxes.', 'err');
+  if(a !== b) return say($('admMsg'), 'The two boxes do not match.', 'err');
+  NEW_PHRASE = a;
+  $('adm1').disabled = $('adm2').disabled = $('admBtn').disabled = true;
+  $('admUndo').classList.remove('hide');
+  say($('admMsg'), 'Staged. It takes effect when you publish — the check below tests it first.', 'warn');
+  scheduleBuild(0);
+});
+
+$('admUndo').addEventListener('click', () => {
+  NEW_PHRASE = null;
+  ACCESS.admin = JSON.parse(JSON.stringify(LIVE.admin));
+  if(LIVE.vault) ACCESS.vault = JSON.parse(JSON.stringify(LIVE.vault));
+  $('adm1').value = $('adm2').value = '';
+  $('adm1').disabled = $('adm2').disabled = $('admBtn').disabled = false;
+  $('admUndo').classList.add('hide');
+  say($('admMsg'), '');
+  scheduleBuild(0);
+});
+
+/* ── publish ─────────────────────────────────────────────────────────── */
+$('publishBtn').addEventListener('click', async () => {
+  let copied = false;
+  try{
+    await navigator.clipboard.writeText($('out').value);
+    copied = true;
+  }catch(_){}
+  window.open(GITHUB_EDIT, '_blank', 'noopener');
+  say($('pubMsg'),
+    copied
+      ? 'Copied. In the GitHub tab: select all, paste, then Commit changes.'
+      : 'Could not reach the clipboard — open "Show the file", copy it, then paste it in the GitHub tab.',
+    copied ? 'ok' : 'warn');
+});
+
+$('dlBtn').addEventListener('click', () => {
+  const blob = new Blob([$('out').value], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'access.json';
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  say($('pubMsg'), 'Downloaded. Upload it over docs/kit/access.json in GitHub.', 'ok');
+});
+
+/* ── did it actually go live? ────────────────────────────────────────── */
+$('verifyBtn').addEventListener('click', async () => {
+  $('verifyBtn').disabled = true;
+  say($('verMsg'), 'Asking the live site…', 'busy');
+  await yield_();
+
+  try{
+    const live = await (await fetch('access.json' + bust(), {cache:'no-store'})).json();
+    const testable = ROWS.filter(r => r.password.trim());
+    const missing = [];
+
+    for(const row of testable){
+      let ok = false;
+      for(const entry of live.entries){
+        const raw = await unwrap(row.password.trim(), entry, live.kdf);
+        if(raw && sameBytes(raw, CONTENT)){ ok = true; break; }
+      }
+      if(!ok) missing.push(row.label || 'Untitled');
+    }
+
+    const phrase = NEW_PHRASE || PHRASE;
+    const adminRaw = live.admin ? await unwrap(phrase, live.admin, live.kdf) : null;
+    const adminLive = !!(adminRaw && sameBytes(adminRaw, CONTENT));
+
+    if(!missing.length && live.entries.length === ROWS.length && adminLive){
+      // the live file now matches the draft — rebase onto it
+      LIVE = live;
+      if(NEW_PHRASE){ PHRASE = NEW_PHRASE; NEW_PHRASE = null; }
+      $('adm1').value = $('adm2').value = '';
+      $('adm1').disabled = $('adm2').disabled = $('admBtn').disabled = false;
+      $('admUndo').classList.add('hide');
+      say($('admMsg'), '');
+      ROWS.forEach((r, i) => {
+        r.origIndex = i;
+        r.origLabel = r.label;
+        r.origPassword = r.password;
+      });
+      render();
+      renderStatus();
+      $('publishBtn').disabled = true;
+      say($('verMsg'), 'Live. Every password in this list opens the kit right now.', 'ok');
+    }else{
+      const bits = [];
+      if(missing.length) bits.push('not accepted yet: ' + missing.join(', '));
+      if(live.entries.length !== ROWS.length) bits.push('the live file still lists ' + live.entries.length);
+      if(!adminLive) bits.push('the admin phrase has not changed over');
+      say($('verMsg'),
+        'Not live yet — ' + bits.join('; ') +
+        '. GitHub Pages usually takes about a minute after you commit.', 'warn');
+    }
+  }catch(_){
+    say($('verMsg'), 'Could not reach the live file. Check your connection.', 'err');
+  }
+  $('verifyBtn').disabled = false;
+});
+
 pw.focus();
 </script>
 </body>

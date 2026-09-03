@@ -74,11 +74,18 @@ Passing the admin phrase keeps every password that is already handed out working
 every password already given to a builder.
 
 **To manage passwords**, no terminal: enter the admin phrase at
-**www.reddmarine.com/kit/** — the gate recognises it and offers "Manage
-passwords" alongside "Open the kit". The management screen lists every password
-in the clear, each one editable — change the password, rename who it is for, add
-one, remove one, or rotate the admin phrase itself. Then paste the file it builds
-over `docs/kit/access.json` in the GitHub web UI. The page lists the exact clicks.
+**www.reddmarine.com/kit/**. A demo password opens the kit; the admin phrase
+opens the access console instead (the kit is one button away from there). The console lists every password in the clear,
+each one editable — change it, rename who it is for, add one, remove one, or
+rotate the admin phrase.
+
+**Nothing the console does reaches the live site by itself.** Pages is static, so
+publishing is a commit, and the console is explicit about it: a banner always
+shows what is live versus what is only in your draft, a safety check decrypts the
+exact file you are about to publish and refuses anything that would lock you out,
+"Copy and open GitHub" puts the file on your clipboard and opens the editor for
+`docs/kit/access.json`, and "Check the live site" afterwards tests your passwords
+against the real deployed file rather than guessing from a timer.
 
 Wrapping a key is one-way, so a wrapped password could never be read back. To make
 them readable, `access.json` also carries a **vault**: a second random key wrapped

@@ -369,22 +369,23 @@ body[data-tone="dark"]{background:#08101A}
   font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
   color:rgba(232,238,245,.34);pointer-events:none;
 }
-/* the five light layers — presets drive these five numbers */
+/* the four light layers — presets drive these four numbers.
+   No red/green markers: those are navigation aids for marked channels,
+   not something a private residential dock may display. */
 #dock{
-  --l-deck:0; --l-edge:0; --l-spread:0; --l-under:0; --l-nav:0;
+  --l-deck:0; --l-edge:0; --l-spread:0; --l-under:0;
   --c-under:#2FD9C8;
 }
 #dock .lyr-deck{opacity:var(--l-deck)}
 #dock .lyr-edge{opacity:var(--l-edge)}
 #dock .lyr-spread{opacity:var(--l-spread)}
 #dock .lyr-under{opacity:var(--l-under)}
-#dock .lyr-nav{opacity:var(--l-nav)}
-#dock .lyr-deck,#dock .lyr-edge,#dock .lyr-spread,#dock .lyr-under,#dock .lyr-nav{
+#dock .lyr-deck,#dock .lyr-edge,#dock .lyr-spread,#dock .lyr-under{
   transition:opacity .55s cubic-bezier(.4,0,.2,1);
 }
 #dock .under-fill{fill:var(--c-under);transition:fill .55s ease}
 @media (prefers-reduced-motion:reduce){
-  #dock .lyr-deck,#dock .lyr-edge,#dock .lyr-spread,#dock .lyr-under,#dock .lyr-nav,#dock .under-fill{transition:none}
+  #dock .lyr-deck,#dock .lyr-edge,#dock .lyr-spread,#dock .lyr-under,#dock .under-fill{transition:none}
 }
 
 /* app control panel */
@@ -734,7 +735,7 @@ body[data-tone="dark"]{background:#08101A}
          <div class="dock-live-main">
           <div class="scene">
           <svg id="dock" viewBox="0 0 1000 440" role="img"
-               aria-label="Illustration of a dock at night in one-point perspective. Deck lights, edge lights, a spreader flood light, underwater lights and red and green navigation markers turn on and off with the selected scene.">
+               aria-label="Illustration of a dock at night in one-point perspective. Deck lights, edge lights, a spreader flood light and underwater lights turn on and off with the selected scene.">
             <defs>
               <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#05090F"/><stop offset="100%" stop-color="#13243C"/>
@@ -833,16 +834,6 @@ body[data-tone="dark"]{background:#08101A}
               <ellipse cx="560" cy="400" rx="300" ry="66" fill="#EAF2FF" opacity=".2" filter="url(#g28)"/>
               <circle cx="200" cy="196" r="24" fill="#EAF2FF" opacity=".55" filter="url(#g14)"/>
               <ellipse cx="900" cy="356" rx="60" ry="54" fill="#EAF2FF" opacity=".16" filter="url(#g28)"/>
-            </g>
-
-            <!-- ═ NAV MARKERS (layer 5) ═ -->
-            <g class="lyr-nav">
-              <circle cx="462" cy="284" r="18" fill="#FF2D1A" opacity=".5" filter="url(#g14)"/>
-              <circle cx="462" cy="284" r="4.2" fill="#FF6A57"/>
-              <circle cx="538" cy="284" r="18" fill="#12E07A" opacity=".5" filter="url(#g14)"/>
-              <circle cx="538" cy="284" r="4.2" fill="#63F5B0"/>
-              <ellipse cx="462" cy="300" rx="9" ry="18" fill="#FF2D1A" opacity=".3" filter="url(#g14)"/>
-              <ellipse cx="538" cy="300" rx="9" ry="18" fill="#12E07A" opacity=".3" filter="url(#g14)"/>
             </g>
 
             <!-- ═ PILINGS (drawn over the light so they occlude) ═ -->
@@ -1738,17 +1729,19 @@ const WARM = '#FFCF8A', TEAL = '#2FD9C8', PARTY = '#A855F7', WHITE = '#EAF2FF';
 
 const PRESETS = [
   {id:'off',      name:'All Off',       desc:'Everything dark',
-   deck:0,   edge:0,   spread:0, under:0,   nav:0,   uc:TEAL},
+   deck:0,   edge:0,   spread:0, under:0,   uc:TEAL},
   {id:'arrival',  name:'Arrival',       desc:'Enough to walk out',
-   deck:.30, edge:.55, spread:0, under:0,   nav:1,   uc:TEAL},
+   deck:.30, edge:.55, spread:0, under:0,   uc:TEAL},
   {id:'evening',  name:'Evening',       desc:'The everyday scene',
-   deck:.50, edge:.55, spread:0, under:.85, nav:1,   uc:TEAL},
+   deck:.50, edge:.55, spread:0, under:.85, uc:TEAL},
   {id:'entertain',name:'Entertain',     desc:'People on the dock',
-   deck:.80, edge:1,   spread:0, under:.90, nav:1,   uc:PARTY},
-  {id:'running',  name:'Running Lights',desc:'Markers only',
-   deck:0,   edge:0,   spread:0, under:0,   nav:1,   uc:TEAL},
+   deck:.80, edge:1,   spread:0, under:.90, uc:PARTY},
+  // was "Running Lights · markers only" — without the markers that was just
+  // All Off under a second name, so it became the low walkway scene instead
+  {id:'path',     name:'Path Lights',   desc:'Just the walkway',
+   deck:0,   edge:.55, spread:0, under:0,   uc:TEAL},
   {id:'security', name:'Security',      desc:'Flood the whole dock',
-   deck:0,   edge:0,   spread:1, under:0,   nav:0,   uc:TEAL},
+   deck:0,   edge:0,   spread:1, under:0,   uc:TEAL},
 ];
 
 const LAYERS = [
@@ -1756,7 +1749,6 @@ const LAYERS = [
   {k:'edge',   nm:'Edge / path',  c:'#FFD9A0'},
   {k:'spread', nm:'Spreader',     c:WHITE},
   {k:'under',  nm:'Underwater',   c:TEAL},
-  {k:'nav',    nm:'Nav markers',  c:'#12E07A'},
 ];
 
 const dock     = document.getElementById('dock');
@@ -1811,8 +1803,8 @@ leaving.className = 'wide';
 leaving.innerHTML = `<span class="nm">Leaving the dock</span>
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg>`;
 leaving.addEventListener('click', ()=>{
-  applyPreset(PRESETS.find(p=>p.id==='running'));
-  toast('Deck lights off · outlets off · nav markers left on');
+  applyPreset(PRESETS.find(p=>p.id==='path'));
+  toast('Deck lights off · outlets off · walkway lights left on');
 });
 scenesEl.appendChild(leaving);
 
