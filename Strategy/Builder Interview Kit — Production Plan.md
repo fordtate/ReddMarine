@@ -156,28 +156,37 @@ separate production.
 ### Light layers (independently controllable)
 
 1. **Deck / post lights** — warm downlights along the walkway
-2. **Running / edge lights** — low path lighting at the deck edge
+2. **Path / edge lights** — low lighting at the deck edge
 3. **Spreader / flood lights** — harsh white, mounted high on a piling
 4. **Underwater lights** — glow in the water around and under the dock
-5. **Nav markers** — red (port) and green (starboard) at the dock end
+
+**Cut: red/green nav markers.** They were spec'd as layer 5 and built, then
+removed on 3 Sep 2026. Red and green markers are navigation aids for marked
+channels — a private residential dock does not get to display them, and showing
+them to a marine contractor is a credibility problem in front of the one audience
+that would know. Four layers, not five.
 
 ### Presets
 
-| Preset | Deck | Edge | Spreader | Underwater | Nav |
-|--------|------|------|----------|------------|-----|
-| All Off | – | – | – | – | – |
-| Arrival | 30% warm | on, low warm | – | – | on |
-| Evening | 50% warm | on, low warm | – | on, teal | on |
-| Entertain | 80% warm | on | – | on, color | on |
-| Running Lights Only | – | – | – | – | on |
-| Security | – | – | full white | – | – |
+| Preset | Deck | Edge | Spreader | Underwater |
+|--------|------|------|----------|------------|
+| All Off | – | – | – | – |
+| Arrival | 30% warm | on, low warm | – | – |
+| Evening | 50% warm | on, low warm | – | on, teal |
+| Entertain | 80% warm | on | – | on, color |
+| Path Lights | – | on, low warm | – | – |
+| Security | – | – | full white | – |
+
+*"Running Lights Only" was markers-only. With the markers gone it would have been
+a second All Off, so it became **Path Lights** — just the walkway edge, which is a
+scene a homeowner would actually use.*
 
 ### Style
 
 Night scene. Dock rendered in the brand's one-point-perspective motif (ties to the
 logo). Water plane with subtle reflection of the lights. UI chrome in the Redd Marine
 palette (`#EF3513` / `#141414` / `#FFF8E1`, Montserrat); the fixture light colors are
-realistic (warm white, teal underwater, red/green nav), not brand-constrained.
+realistic (warm white, teal underwater), not brand-constrained.
 Illustration quality, not photoreal — nobody should mistake it for a finished product.
 
 ---
