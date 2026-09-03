@@ -73,8 +73,9 @@ Passing the admin phrase keeps every password that is already handed out working
 `--init` instead generates a new content key and new passwords, which invalidates
 every password already given to a builder.
 
-**To manage passwords**, no terminal: go to **www.reddmarine.com/kit/admin.html**
-and enter the admin phrase. That opens a management screen listing every password
+**To manage passwords**, no terminal: enter the admin phrase at
+**www.reddmarine.com/kit/** — the gate recognises it and offers "Manage
+passwords" alongside "Open the kit". The management screen lists every password
 in the clear, each one editable — change the password, rename who it is for, add
 one, remove one, or rotate the admin phrase itself. Then paste the file it builds
 over `docs/kit/access.json` in the GitHub web UI. The page lists the exact clicks.

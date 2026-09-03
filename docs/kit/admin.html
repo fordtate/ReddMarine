@@ -315,9 +315,7 @@ function code(chars){
 }
 
 /* ── unlock ──────────────────────────────────────────────────────────── */
-$('unlockForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const phrase = $('phrase').value;
+async function unlock(phrase){
   if(!phrase) return;
 
   $('unlockBtn').disabled = true;
@@ -367,9 +365,17 @@ $('unlockForm').addEventListener('submit', async e => {
   render();
   rebuild();
   window.scrollTo(0, 0);
+}
+
+$('unlockForm').addEventListener('submit', e => {
+  e.preventDefault();
+  unlock($('phrase').value);
 });
 
-$('lockBtn').addEventListener('click', () => location.reload());
+$('lockBtn').addEventListener('click', () => {
+  try{ sessionStorage.removeItem('rm_admin'); }catch(_){}
+  location.href = './';
+});
 
 /* ── the editable list ───────────────────────────────────────────────── */
 function render(){
@@ -565,7 +571,17 @@ $('dlBtn').addEventListener('click', () => {
   say($('outMsg'), 'Downloaded. Upload it over docs/kit/access.json in GitHub.', 'ok');
 });
 
-$('phrase').focus();
+/* Arrived from the gate after the admin phrase already verified there?
+   Consume it once and unlock, so nobody types the same phrase twice. */
+(function fromGate(){
+  let handed = null;
+  try{
+    handed = sessionStorage.getItem('rm_admin');
+    sessionStorage.removeItem('rm_admin');   // one-shot, whatever happens next
+  }catch(_){}
+  if(handed) unlock(handed);
+  else $('phrase').focus();
+})();
 </script>
 </body>
 </html>

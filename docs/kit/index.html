@@ -86,6 +86,27 @@
   .msg.err{color:#FF7A63}
   .msg.busy{color:var(--cream-dim)}
 
+  /* Shown only once the admin phrase has actually verified — a stranger never
+     learns that a management screen exists. */
+  .choice{text-align:left;display:none}
+  .choice.on{display:block;animation:rise .22s ease}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .choice .who{
+    display:flex;align-items:center;gap:9px;margin-bottom:16px;
+    font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    color:#4FD19A;
+  }
+  .choice .who i{width:6px;height:6px;border-radius:50%;background:#4FD19A;flex:none}
+  .choice p{
+    color:var(--cream-dim);font-size:13px;font-weight:500;line-height:1.6;
+    margin-bottom:18px;
+  }
+  .choice .stack{display:flex;flex-direction:column;gap:10px}
+  button.ghost{
+    background:rgba(255,248,225,.08);color:var(--cream);border:1px solid var(--line);
+  }
+  button.ghost:hover:not(:disabled){background:rgba(255,248,225,.15);filter:none}
+
   footer{
     margin-top:38px;font-size:10.5px;font-weight:600;letter-spacing:.12em;
     text-transform:uppercase;color:var(--cream-dim);opacity:.62;line-height:1.9;
@@ -114,6 +135,15 @@
     <button id="go" type="submit">Open the kit</button>
     <div class="msg" id="msg" role="status" aria-live="polite"></div>
   </form>
+
+  <div class="choice" id="choice">
+    <div class="who"><i></i> Admin phrase accepted</div>
+    <p>You can manage who has access, or open the kit the way a builder sees it.</p>
+    <div class="stack">
+      <button type="button" id="manageBtn">Manage passwords</button>
+      <button type="button" class="ghost" id="openBtn">Open the kit</button>
+    </div>
+  </div>
 
   <footer>
     Redd Marine &middot; Wrightsville Beach, NC<br>
@@ -173,18 +203,24 @@ async function tryEntry(password, entry, kdf){
   }catch(_){ return null; }
 }
 
-async function open(password){
+/* Work out WHICH password this is. The admin record is checked first so an
+   admin can be told apart from a builder — same content key underneath, but a
+   very different set of things you are allowed to do with it. */
+async function identify(password){
   const access = await (await fetch('access.json', {cache:'no-store'})).json();
 
-  // The admin phrase opens the kit too — it wraps the same content key.
-  const candidates = access.entries.concat(access.admin ? [access.admin] : []);
-  let rawKey = null;
-  for(const entry of candidates){
-    rawKey = await tryEntry(password, entry, access.kdf);
-    if(rawKey) break;
+  if(access.admin){
+    const rawKey = await tryEntry(password, access.admin, access.kdf);
+    if(rawKey) return { role:'admin', rawKey, access };
   }
-  if(!rawKey) return null;
+  for(const entry of access.entries){
+    const rawKey = await tryEntry(password, entry, access.kdf);
+    if(rawKey) return { role:'guest', rawKey, access };
+  }
+  return null;
+}
 
+async function decryptKit(rawKey, access){
   const blob = new Uint8Array(await (await fetch(access.payload, {cache:'no-store'})).arrayBuffer());
   const contentKey = await crypto.subtle.importKey('raw', rawKey, 'AES-GCM', false, ['decrypt']);
   const html = await crypto.subtle.decrypt(
@@ -192,6 +228,19 @@ async function open(password){
   );
   return new TextDecoder().decode(html);
 }
+
+/* Hand the whole tab over to the kit: full screen, real keyboard focus, and
+   "Add to Home Screen" on an iPad behaves the way it should. */
+function handOver(html){
+  document.open();
+  document.write(html);
+  document.close();
+}
+
+const choice     = document.getElementById('choice');
+const manageBtn  = document.getElementById('manageBtn');
+const openBtn    = document.getElementById('openBtn');
+let admin = null;          // { rawKey, access, password } once verified
 
 form.addEventListener('submit', async e => {
   e.preventDefault();
@@ -205,9 +254,9 @@ form.addEventListener('submit', async e => {
   try{
     // let the browser paint the busy state before PBKDF2 takes the thread
     await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
-    const html = await open(password);
+    const who = await identify(password);
 
-    if(!html){
+    if(!who){
       say('That password does not open this kit.', 'err');
       go.disabled = false;
       pw.disabled = false;
@@ -215,15 +264,38 @@ form.addEventListener('submit', async e => {
       return;
     }
 
-    // Hand the whole tab over to the kit: full screen, real keyboard focus,
-    // and "Add to Home Screen" on an iPad behaves the way it should.
-    document.open();
-    document.write(html);
-    document.close();
+    if(who.role === 'admin'){
+      // Don't just open the kit — an admin came here to do something else.
+      admin = { rawKey: who.rawKey, access: who.access, password };
+      form.style.display = 'none';
+      choice.classList.add('on');
+      return;
+    }
+
+    handOver(await decryptKit(who.rawKey, who.access));
   }catch(err){
     say('Could not load the kit. Check your connection and try again.', 'err');
     go.disabled = false;
     pw.disabled = false;
+  }
+});
+
+/* Carry the phrase across in sessionStorage so admin.html unlocks straight
+   away instead of asking for it a second time. Same origin, this tab only,
+   and read exactly once. Never in the URL, where it would land in history. */
+manageBtn.addEventListener('click', () => {
+  try{ sessionStorage.setItem('rm_admin', admin.password); }catch(_){}
+  location.href = 'admin.html';
+});
+
+openBtn.addEventListener('click', async () => {
+  openBtn.disabled = manageBtn.disabled = true;
+  openBtn.textContent = 'Opening\u2026';
+  try{
+    handOver(await decryptKit(admin.rawKey, admin.access));
+  }catch(_){
+    openBtn.disabled = manageBtn.disabled = false;
+    openBtn.textContent = 'Open the kit';
   }
 });
 
